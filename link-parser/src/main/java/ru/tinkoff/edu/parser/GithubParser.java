@@ -8,7 +8,10 @@ import java.util.regex.Pattern;
 
 public final class GithubParser extends AbstractParser {
 
+    private final Pattern pattern;
+
     public GithubParser() {
+        pattern = Pattern.compile("^[A-Za-z0-9\\-\\s]*$");
         host = "github.com";
     }
 
@@ -19,7 +22,6 @@ public final class GithubParser extends AbstractParser {
         String path = url.getPath();
         if (path == null)
             return null;
-        Pattern pattern = Pattern.compile("^[A-Za-z0-9\\-\\s]*$");
         Matcher matcher;
         String[] split = path.split("/");
         for (String s : split) {
