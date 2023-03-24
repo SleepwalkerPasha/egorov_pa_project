@@ -5,7 +5,7 @@ import ru.tinkoff.edu.parser.entities.ParseResult;
 
 import java.net.URI;
 
-public abstract non-sealed class AbstractParser implements IParser {
+public abstract sealed class AbstractParser implements IParser permits GithubParser, StackOverflowParser  {
 
     private ParseResult data;
 
