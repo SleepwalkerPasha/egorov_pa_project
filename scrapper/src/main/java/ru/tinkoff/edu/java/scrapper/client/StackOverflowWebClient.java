@@ -6,6 +6,8 @@ import reactor.netty.http.client.HttpClient;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowItemsResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
 
+import java.util.Objects;
+
 public class StackOverflowWebClient implements StackOverflowClient {
 
     private final WebClient stackOverflowClient;
@@ -38,12 +40,12 @@ public class StackOverflowWebClient implements StackOverflowClient {
     @Override
     public StackOverflowResponse fetchQuestion(String id) {
 
-        return stackOverflowClient
-                .get()
-                .uri("/questions/{id}?site=stackoverflow", id)
-                .retrieve()
-                .bodyToMono(StackOverflowItemsResponse.class)
-                .block()
+        return Objects.requireNonNull(stackOverflowClient
+                        .get()
+                        .uri("/questions/{id}?site=stackoverflow", id)
+                        .retrieve()
+                        .bodyToMono(StackOverflowItemsResponse.class)
+                        .block())
                 .items()
                 .get(0);
     }
