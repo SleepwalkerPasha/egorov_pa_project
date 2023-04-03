@@ -30,6 +30,12 @@ public class ScrapperErrorHandler {
         return exceptionToResponse(e);
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleConflict(final IllegalArgException e) {
+        return exceptionToResponse(e);
+    }
+
     private ApiErrorResponse exceptionToResponse(final ApiErrorException e) {
         List<String> stacktrace = Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toList();
         log.error(e.getDescription() + ": " + e.getMessage());
@@ -42,9 +48,4 @@ public class ScrapperErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiErrorResponse handleConflict(final IllegalArgException e) {
-        return exceptionToResponse(e);
-    }
 }

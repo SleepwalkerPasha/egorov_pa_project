@@ -13,7 +13,7 @@ public class BotController {
     @PostMapping("/updates")
     public void linkUpdate(@RequestBody @Valid LinkUpdateRequest request) {
         if (request.getId() != 1L) {
-            throw new ApiErrorException("id ==" + request.getId());
+            throw new ApiErrorException("id == " + request.getId());
         }
     }
 }

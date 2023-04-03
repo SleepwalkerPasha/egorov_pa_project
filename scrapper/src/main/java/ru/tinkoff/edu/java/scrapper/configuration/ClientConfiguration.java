@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.scrapper.client.StackOverflowWebClient;
 
 @Validated
 @ConfigurationProperties(prefix = "client", ignoreUnknownFields = false)
-public record ClientConfiguration (String githubUrl, String stackOverflowUrl) {
+public record ClientConfiguration(String githubUrl, String stackOverflowUrl) {
 
     @Bean
     public GithubWebClient transferGithubWebClient() {
