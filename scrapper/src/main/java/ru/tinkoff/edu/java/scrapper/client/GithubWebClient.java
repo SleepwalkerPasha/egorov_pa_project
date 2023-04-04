@@ -24,7 +24,7 @@ public class GithubWebClient implements GithubClient {
     }
 
     public static GithubWebClient getInstance(WebClient.Builder githubClientBuilder, String url) {
-        if (url == null)
+        if (url == null || url.isBlank())
             return new GithubWebClient(githubClientBuilder);
         return new GithubWebClient(githubClientBuilder, url);
     }

@@ -20,9 +20,6 @@ public class ScrapperController {
             throw new BadRequestException("id ==" + id);
         if (id == 404)
             throw new NotFoundException("id is not found");
-        // if id already registered
-        // throw IllegalArgumentException
-        // 409 status code
     }
 
     @DeleteMapping("/tg-chat/{id}")
@@ -48,9 +45,6 @@ public class ScrapperController {
             throw new BadRequestException("id ==" + id);
         if (id == 404)
             throw new NotFoundException("id is not found");
-        // if link is already in following
-        // throw IllegalArgumentException
-        // 409 status code
         return new LinkResponse(id, link.link());
     }
 

@@ -6,63 +6,45 @@ import ru.tinkoff.edu.java.bot.service.commands.*;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TelegramMessageProcessor implements UserMessageProcessor {
 
-    private final Map<String, Command> commands;
-
-    private final Pattern pattern;
+    private final List<Command> commands;
 
     public TelegramMessageProcessor(LinkStorage storage) {
         HelpCommand helpCommand = new HelpCommand();
 
-        this.commands = Stream.of(new StartCommand(storage),
+        this.commands = List.of(new StartCommand(storage),
                 helpCommand,
                 new TrackCommand(storage),
                 new UntrackCommand(storage),
-                new ListCommand(storage)).collect(Collectors.toMap(Command::command, Function.identity()));
+                new ListCommand(storage));
 
         helpCommand.setInfo(buildHelpString());
-
-        pattern = Pattern.compile("^/[a-zA-Z]+$");
     }
 
     @Override
     public List<? extends Command> commands() {
-        return commands.values().stream().toList();
+        return commands;
     }
 
     @Override
     public SendMessage process(Update update) {
-        Command command = findCommand(update);
-        if (command == null)
-            return new SendMessage(update.message().chat().id(), "Команда не поддерживается");
-        else
-            return command.handle(update);
+        return findCommand(update).handle(update);
     }
 
     private String buildHelpString() {
-        return commands.values()
+        return commands
                 .stream()
                 .map(c -> c.command() + " - " + c.description())
                 .collect(Collectors.joining("\n", "Команды бота: \n", ""));
     }
 
-    private Command findCommand(Update update) {
-        String botCommandAndArgs = update.message().text();
-        String botCommand = botCommandAndArgs;
-        if (botCommandAndArgs.contains(" "))
-            botCommand = botCommandAndArgs.split(" ")[0];
-        Matcher matcher = pattern.matcher(botCommand);
-        if (matcher.matches())
-            return commands.get(botCommand);
-        else
-            return null;
+    public Command findCommand(Update update) {
+        return commands.parallelStream()
+                .filter(c -> c.supports(update))
+                .findAny()
+                .orElse(new UnknownCommand());
     }
 }
