@@ -16,16 +16,13 @@ import ru.tinkoff.edu.java.bot.storage.InMemoryLinkStorage;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 class TelegramMessageProcessorTest {
 
-    @Mock
     @InjectMocks
     TelegramMessageProcessor processor;
 
@@ -40,11 +37,11 @@ class TelegramMessageProcessorTest {
 
     @BeforeEach
     void setUp() {
-        processor = Mockito.mock(TelegramMessageProcessor.class);
+        storage = Mockito.mock(InMemoryLinkStorage.class);
+        processor = new TelegramMessageProcessor(storage);
         update = new Update();
         message = new Message();
         chat = new Chat();
-        storage = Mockito.mock(InMemoryLinkStorage.class);
         ReflectionTestUtils.setField(chat, "id", 1L);
     }
 
@@ -53,7 +50,6 @@ class TelegramMessageProcessorTest {
         ReflectionTestUtils.setField(message, "chat", chat);
         ReflectionTestUtils.setField(message, "text", "/something");
         ReflectionTestUtils.setField(update, "message", message);
-        when(processor.findCommand(update)).thenReturn(new UnknownCommand());
         Command answer = processor.findCommand(update);
 
         assertEquals(UnknownCommand.class, answer.getClass());
@@ -64,20 +60,16 @@ class TelegramMessageProcessorTest {
         ReflectionTestUtils.setField(message, "chat", chat);
         ReflectionTestUtils.setField(message, "text", "/lists");
         ReflectionTestUtils.setField(update, "message", message);
-        Map<Long, Set<String>> map = new ConcurrentHashMap<>();
-        map.put(1L, Set.of("https://github.com/SleepwalkerPasha/java-filmorate"));
-        ReflectionTestUtils.setField(storage, "map", map);
-        ReflectionTestUtils.setField(processor, "storage", storage);
+        Set<String> set = Set.of("https://github.com/SleepwalkerPasha/java-filmorate");
+        String text = "Список отслеживаемых ссылок: \n" + String.join("\n", set);
 
-        String text = "Список отслеживаемых ссылок: \n" + String.join("\n", map.get(1L));
+        when(storage.getFollowedLinks(1L)).thenReturn(set);
 
         SendMessage expected = new SendMessage(1L, text);
 
-        when(processor.process(update)).thenReturn(expected);
-
         SendMessage answer = processor.process(update);
 
-        assertEquals(expected, answer);
+        assertEquals(expected.getParameters().get("text"), answer.getParameters().get("text"));
     }
 
     @Test
@@ -85,18 +77,15 @@ class TelegramMessageProcessorTest {
         ReflectionTestUtils.setField(message, "chat", chat);
         ReflectionTestUtils.setField(message, "text", "/lists");
         ReflectionTestUtils.setField(update, "message", message);
-        Map<Long, Set<String>> map = new ConcurrentHashMap<>();
-        map.put(1L, new HashSet<>());
-        ReflectionTestUtils.setField(storage, "map", map);
-        ReflectionTestUtils.setField(processor, "storage", storage);
+        String text = "Список отслеживаемых ссылок пуст";
 
-        SendMessage expected = new SendMessage(1L, "Список отслеживаемых ссылок пуст");
+        when(storage.getFollowedLinks(1L)).thenReturn(new HashSet<>());
 
-        when(processor.process(update)).thenReturn(expected);
+        SendMessage expected = new SendMessage(1L, text);
 
         SendMessage answer = processor.process(update);
 
-        assertEquals(expected, answer);
+        assertEquals(expected.getParameters().get("text"), answer.getParameters().get("text"));
     }
 
 }

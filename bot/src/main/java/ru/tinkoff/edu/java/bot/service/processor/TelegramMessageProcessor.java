@@ -12,10 +12,8 @@ public class TelegramMessageProcessor implements UserMessageProcessor {
 
     private final List<Command> commands;
 
-    private final LinkStorage storage;
 
     public TelegramMessageProcessor(LinkStorage storage) {
-        this.storage = storage;
         HelpCommand helpCommand = new HelpCommand();
 
         this.commands = List.of(new StartCommand(storage),

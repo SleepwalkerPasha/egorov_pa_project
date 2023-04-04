@@ -3,8 +3,10 @@ package ru.tinkoff.edu.java.bot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
+import com.pengrad.telegrambot.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import ru.tinkoff.edu.java.bot.service.commands.Command;
 import ru.tinkoff.edu.java.bot.service.processor.UserMessageProcessor;
@@ -30,6 +32,11 @@ public class TelegramRefresherBot implements Bot {
     }
 
     @Override
+    public <T extends BaseRequest<T, R>, R extends BaseResponse> void execute(BaseRequest<T, R> request) {
+        bot.execute(request);
+    }
+
+    @Override
     public int process(List<Update> updates) {
         updates.stream()
                 .peek(this::printUpdate)
@@ -48,7 +55,7 @@ public class TelegramRefresherBot implements Bot {
         if (bot == null) {
             bot = new TelegramBot(token);
 
-            bot.execute(new SetMyCommands(commands
+            this.execute(new SetMyCommands(commands
                     .stream()
                     .map(Command::toApiCommand)
                     .toArray(BotCommand[]::new)));
