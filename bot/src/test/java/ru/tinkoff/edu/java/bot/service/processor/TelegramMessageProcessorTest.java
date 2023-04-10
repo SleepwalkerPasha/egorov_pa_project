@@ -10,16 +10,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.tinkoff.edu.java.bot.service.commands.Command;
-import ru.tinkoff.edu.java.bot.service.commands.UnknownCommand;
+import ru.tinkoff.edu.java.bot.service.commands.*;
 import ru.tinkoff.edu.java.bot.storage.InMemoryLinkStorage;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+
 
 class TelegramMessageProcessorTest {
 
@@ -38,11 +40,21 @@ class TelegramMessageProcessorTest {
     @BeforeEach
     void setUp() {
         storage = Mockito.mock(InMemoryLinkStorage.class);
-        processor = new TelegramMessageProcessor(storage);
+        processor = new TelegramMessageProcessor();
         update = new Update();
         message = new Message();
         chat = new Chat();
         ReflectionTestUtils.setField(chat, "id", 1L);
+        HelpCommand helpCommand = new HelpCommand();
+        List<Command> commands = new ArrayList<>() {{
+            add(new StartCommand(storage));
+            add(new TrackCommand(storage));
+            add(new UntrackCommand(storage));
+            add(new ListCommand(storage));
+        }};
+        helpCommand.setInfo(commands);
+        ReflectionTestUtils.setField(processor, "commands", commands);
+        ReflectionTestUtils.setField(processor, "helpCommand", helpCommand);
     }
 
     @Test

@@ -1,15 +1,10 @@
 package ru.tinkoff.edu.java.bot.storage;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
-@Qualifier("InMemoryLinkStorage")
 public class InMemoryLinkStorage implements LinkStorage {
 
     private final Map<Long, Set<String>> map;

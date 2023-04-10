@@ -23,7 +23,7 @@ public class BotConfiguration {
 
     @Bean
     public UserMessageProcessor transferUserMessageProcessor() {
-        return new TelegramMessageProcessor(transferStorage());
+        return new TelegramMessageProcessor();
     }
 
     @Bean
