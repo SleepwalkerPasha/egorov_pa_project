@@ -39,7 +39,6 @@ public class StackOverflowWebClient implements StackOverflowClient {
 
     @Override
     public StackOverflowResponse fetchQuestion(String id) {
-
         return Objects.requireNonNull(stackOverflowClient
                         .get()
                         .uri("/questions/{id}?site=stackoverflow", id)
