@@ -19,7 +19,7 @@ public class TrackCommand implements Command{
 
     @Override
     public String description() {
-        return "начать отслеживание ссылки \n введите команду в формате: " + command() + " url";
+        return "начать отслеживание ссылки\nвведите команду в формате: " + command() + " url";
     }
 
     @Override
