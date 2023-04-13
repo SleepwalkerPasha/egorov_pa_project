@@ -12,23 +12,7 @@ import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import java.util.List;
 
 @RestController
-public class ScrapperController {
-
-    @PostMapping("/tg-chat/{id}")
-    public void registerNewChat(@PathVariable Long id) {
-        if (id != 400)
-            throw new BadRequestException("id ==" + id);
-        if (id == 404)
-            throw new NotFoundException("id is not found");
-    }
-
-    @DeleteMapping("/tg-chat/{id}")
-    public void deleteChat(@PathVariable Long id) {
-        if (id != 400)
-            throw new BadRequestException("id ==" + id);
-        if (id == 404)
-            throw new NotFoundException("id is not found");
-    }
+public class StackOverflowController {
 
     @GetMapping("/links")
     public ListLinkResponse getFollowedLinks(@RequestHeader("Tg-Chat-Id") Long id) {
