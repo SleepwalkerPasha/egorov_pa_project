@@ -6,6 +6,7 @@ import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.java.scrapper.service.TgChatService;
 
 @Service
+@Qualifier("JdbcTgChatService")
 public class JdbcTgChatService implements TgChatService {
 
     private final TgChatRepository tgChatRepository;
@@ -16,11 +17,11 @@ public class JdbcTgChatService implements TgChatService {
 
     @Override
     public void register(long tgChatId) {
-        tgChatRepository.register(tgChatId);
+        tgChatRepository.add(tgChatId);
     }
 
     @Override
     public void unregister(long tgChatId) {
-        tgChatRepository.unregister(tgChatId);
+        tgChatRepository.remove(tgChatId);
     }
 }

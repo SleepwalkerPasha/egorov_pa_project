@@ -1,32 +1,70 @@
 package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
+import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
+
+import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 @Qualifier("JdbcTgChatRepository")
-@Slf4j
 @RequiredArgsConstructor
 public class JdbcTgChatRepository implements TgChatRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Transactional
     @Override
-    public void register(long chatId) {
+    public long add(long chatId) {
+        Optional<Long> id = findById(chatId);
+        if (id.isPresent())
+            throw new BadRequestException("данный пользователь уже зарегистрирован");
         String sql = "INSERT INTO CHAT (id) VALUES (?)";
-        jdbcTemplate.update(sql, chatId);
-        log.info("register new chatid {}", chatId);
+        if (jdbcTemplate.update(sql, chatId) == 1)
+            return chatId;
+        else
+            return -1L;
     }
 
     @Override
-    public void unregister(long chatId) {
+    @Transactional
+    public long remove(long chatId) {
+        Optional<Long> id = findById(chatId);
+        if (id.isEmpty())
+            throw new NotFoundException("данный пользователь не зарегистрирован");
         String sql = "DELETE FROM CHAT WHERE id = ?";
-        jdbcTemplate.update(sql, chatId);
-        log.info("unregister new chatid {}", chatId);
+        if (jdbcTemplate.update(sql, chatId) == 1)
+            return chatId;
+        else
+            return -1L;
+    }
+
+    @Override
+    public Collection<Long> findAll() {
+        var sql = "SELECT * FROM CHAT";
+        return jdbcTemplate.query(sql, tgChatRowMapper());
+    }
+
+    @Override
+    public Optional<Long> findById(long id) {
+        var sql = "SELECT * FROM chat WHERE id = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(sql, tgChatRowMapper(), id)
+                )
+        );
+    }
+
+    private RowMapper<Long> tgChatRowMapper() {
+        return ((rs, rowNum) -> rs.getLong("id"));
     }
 
 }

@@ -32,7 +32,6 @@ public class DatabaseIntegrationTest extends IntegrationEnvironment {
         String pass = DB_CONTAINER.getPassword();
 
         connection = DriverManager.getConnection(url, user, pass);
-
         Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
 
         Path path = new File(".").toPath().toAbsolutePath()
