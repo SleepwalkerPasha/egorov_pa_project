@@ -24,7 +24,7 @@ public class JdbcTgChatRepository implements TgChatRepository {
     @Transactional
     @Override
     public long add(long chatId) {
-        Optional<Long> id = findById(chatId);
+        Optional<Long> id = findByTgChatId(chatId);
         if (id.isPresent())
             throw new BadRequestException("данный пользователь уже зарегистрирован");
         String sql = "INSERT INTO CHAT (id) VALUES (?)";
@@ -37,7 +37,7 @@ public class JdbcTgChatRepository implements TgChatRepository {
     @Override
     @Transactional
     public long remove(long chatId) {
-        Optional<Long> id = findById(chatId);
+        Optional<Long> id = findByTgChatId(chatId);
         if (id.isEmpty())
             throw new NotFoundException("данный пользователь не зарегистрирован");
         String sql = "DELETE FROM CHAT WHERE id = ?";
@@ -54,7 +54,13 @@ public class JdbcTgChatRepository implements TgChatRepository {
     }
 
     @Override
-    public Optional<Long> findById(long id) {
+    public Collection<Long> findByLink(long id) {
+        var sql = "SELECT l.tg_id FROM link AS l LEFT JOIN chat c on c.id = l.tg_id WHERE l.id = ?";
+        return jdbcTemplate.query(sql, tgChatRowMapper(), id);
+    }
+
+    @Override
+    public Optional<Long> findByTgChatId(long id) {
         var sql = "SELECT * FROM chat WHERE id = ?";
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(
@@ -62,6 +68,7 @@ public class JdbcTgChatRepository implements TgChatRepository {
                 )
         );
     }
+
 
     private RowMapper<Long> tgChatRowMapper() {
         return ((rs, rowNum) -> rs.getLong("id"));

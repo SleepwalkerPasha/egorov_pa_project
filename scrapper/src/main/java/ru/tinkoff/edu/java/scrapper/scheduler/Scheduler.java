@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.configuration;
+package ru.tinkoff.edu.java.scrapper.scheduler;
 
 import java.time.Duration;
 

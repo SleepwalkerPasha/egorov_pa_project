@@ -61,7 +61,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     private void checkTgId(long tgChatId) {
-        Optional<Long> findId = chatRepository.findById(tgChatId);
+        Optional<Long> findId = chatRepository.findByTgChatId(tgChatId);
         if (findId.isEmpty()){
             throw new NotFoundException("данный id не зарегистрирован");
         }

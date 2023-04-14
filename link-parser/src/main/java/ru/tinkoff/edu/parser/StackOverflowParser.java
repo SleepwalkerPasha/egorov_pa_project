@@ -1,6 +1,6 @@
 package ru.tinkoff.edu.parser;
 
-import ru.tinkoff.edu.parser.entities.StackOverflowResult;
+import ru.tinkoff.edu.parser.dto.StackOverflowResult;
 
 import java.net.URI;
 

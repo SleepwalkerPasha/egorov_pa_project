@@ -1,6 +1,6 @@
 package ru.tinkoff.edu.parser;
 
-import ru.tinkoff.edu.parser.entities.GithubResult;
+import ru.tinkoff.edu.parser.dto.GithubResult;
 
 import java.net.URI;
 import java.util.regex.Matcher;

@@ -14,6 +14,7 @@ import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,8 +42,8 @@ public class JdbcLinkRepository implements LinkRepository {
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, strUrl);
             preparedStatement.setLong(2, link.getTgId());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(link.getCheckedAt().toString()));
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(link.getCheckedAt().toString()));
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(link.getCheckedAt().toLocalDateTime()));
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(link.getCheckedAt().toLocalDateTime()));
             return preparedStatement;
         }, keyHolder);
         link.setId((Long) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
@@ -55,6 +56,15 @@ public class JdbcLinkRepository implements LinkRepository {
         String strUrl = link.getUrl().toString();
         String sql = "DELETE FROM link AS L WHERE L.url = ? AND L.tg_id = ?";
         jdbcTemplate.update(sql, strUrl, link.getTgId());
+        return link;
+    }
+
+    @Override
+    public Link update(Link link) {
+        String sql = "UPDATE link SET checked_at = now(), update_at = ? WHERE id = ?";
+        jdbcTemplate.update(sql, Timestamp.valueOf(link.getCheckedAt().toLocalDateTime()),
+                Timestamp.valueOf(link.getUpdatedAt().toLocalDateTime()),
+                link.getId());
         return link;
     }
 
@@ -73,8 +83,15 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
+    public Collection<Link> findOldLinks(OffsetDateTime checkedTime) {
+        String sql = "SELECT * FROM link WHERE checked_at <= ?";
+        return jdbcTemplate.query(sql, linkRowMapper);
+    }
+
+    @Override
     public Collection<Link> findAll() {
         String sql = "SELECT * FROM link";
         return jdbcTemplate.query(sql, linkRowMapper);
     }
+
 }
