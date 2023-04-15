@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: script/01-create-chat-table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: script/02-create-link-table.sql
+      relativeToChangelogFile: true

@@ -20,7 +20,7 @@ public class UntrackCommand implements Command{
 
     @Override
     public String description() {
-        return "прекратить отслеживание ссылки\n введите команду в формате: " + command() + " url";
+        return "прекратить отслеживание ссылки\nвведите команду в формате: " + command() + " url";
     }
 
     @Override
