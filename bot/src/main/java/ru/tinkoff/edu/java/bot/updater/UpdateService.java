@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.bot.updater;
 
 import com.pengrad.telegrambot.request.SendMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.bot.dto.LinkUpdateRequest;
 import ru.tinkoff.edu.java.bot.bot.Bot;
@@ -10,6 +11,7 @@ public class UpdateService {
 
     private final Bot bot;
 
+    @Autowired
     public UpdateService(Bot bot) {
         this.bot = bot;
     }

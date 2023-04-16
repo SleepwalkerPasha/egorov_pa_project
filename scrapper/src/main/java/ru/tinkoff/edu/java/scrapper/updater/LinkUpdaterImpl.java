@@ -6,6 +6,7 @@ import ru.tinkoff.edu.java.scrapper.client.BotClient;
 import ru.tinkoff.edu.java.scrapper.client.GithubClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
+import ru.tinkoff.edu.java.scrapper.dto.db.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
@@ -17,6 +18,7 @@ import ru.tinkoff.edu.parser.dto.ParseResult;
 import ru.tinkoff.edu.parser.dto.StackOverflowResult;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -81,11 +83,23 @@ public class LinkUpdaterImpl implements LinkUpdater {
         StackOverflowResponse stackOverflowResponse = stackOverflowClient.fetchQuestion(questionId.toString());
         if (link.getUpdatedAt().isBefore(stackOverflowResponse.lastActivityDate())) {
             List<Long> chatIds = tgChatRepository.findByLink(link.getId()).stream().toList();
+            List<String> description = new ArrayList<>();
+            description.add("Обновление вопроса на StackOverflow");
+            LinkInfo linkInfo = linkRepository.getLinkInfo(link);
+            if (!linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
+                description
+                        .add(String.format("Изменилось число ответов на вопрос - %d",
+                                stackOverflowResponse.answerCount()));
+            else if (!linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
+                description
+                        .add(String.format("Изменилось число комментариев под вопросом - %d",
+                                stackOverflowResponse.commentCount()));
+            }
             link.setUpdatedAt(stackOverflowResponse.lastActivityDate());
             linkRepository.update(link);
             botClient.linkUpdate(LinkUpdateRequest.builder()
                     .id(link.getId())
-                    .description("StackOverflow question update")
+                    .description(String.join("\n", description))
                     .url(link.getUrl().toString())
                     .tgChatIds(chatIds)
                     .build());
@@ -98,13 +112,25 @@ public class LinkUpdaterImpl implements LinkUpdater {
         String repoName = parseResult.repoName();
         String username = parseResult.name();
         GithubResponse githubResponse = githubClient.fetchRepository(username, repoName);
-        if (link.getUpdatedAt().isBefore(githubResponse.updatedAt())) {
+        if (link.getUpdatedAt().isBefore(githubResponse.pushedAt())) {
             List<Long> chatIds = tgChatRepository.findByLink(link.getId()).stream().toList();
-            link.setUpdatedAt(githubResponse.updatedAt());
+            List<String> description = new ArrayList<>();
+            description.add("Обновление репозитория на Github");
+            LinkInfo linkInfo = linkRepository.getLinkInfo(link);
+            if (!linkInfo.getForksCount().equals(githubResponse.forksCount()))
+                description
+                        .add(String.format("Изменилось число форков - %d",
+                                githubResponse.forksCount()));
+            else if (!linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
+                description
+                        .add(String.format("Изменилось число тикетов - %d",
+                                githubResponse.openIssuesCount()));
+            }
+            link.setUpdatedAt(githubResponse.pushedAt());
             linkRepository.update(link);
             botClient.linkUpdate(LinkUpdateRequest.builder()
                     .id(link.getId())
-                    .description("Github repository update")
+                    .description(String.join("\n", description))
                     .url(link.getUrl().toString())
                     .tgChatIds(chatIds)
                     .build());

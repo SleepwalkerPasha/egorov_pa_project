@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
+import ru.tinkoff.edu.java.scrapper.dto.db.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 
 import java.sql.PreparedStatement;
@@ -35,6 +36,8 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     public Link add(Link link) {
+        if (getLink(link).isPresent())
+            return link;
         String strUrl = link.getUrl().toString();
         String sql = "INSERT INTO link (url, tg_id, checked_at, update_at) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -68,11 +71,29 @@ public class JdbcLinkRepository implements LinkRepository {
         return link;
     }
 
+    @Override
     public Optional<Link> getLink(Link link) {
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(
                         jdbcTemplate.query("SELECT * FROM LINK AS L WHERE L.url = ?", linkRowMapper, link.getUrl().toString())
                 )
+        );
+    }
+
+    @Override
+    public LinkInfo getLinkInfo(Link link) {
+        return DataAccessUtils.singleResult(
+                jdbcTemplate.query("SELECT " +
+                                "ID, OPEN_ISSUES_COUNT, FORKS_COUNT, ANSWER_COUNT, COMMENT_COUNT FROM LINK AS L WHERE L.url = ?",
+                        (rs, rowNum) -> LinkInfo
+                                .builder()
+                                .id(rs.getLong("id"))
+                                .openIssuesCount(rs.getInt("OPEN_ISSUES_COUNT"))
+                                .forksCount(rs.getInt("FORKS_COUNT"))
+                                .answerCount(rs.getInt("ANSWER_COUNT"))
+                                .commentCount(rs.getInt("COMMENT_COUNT"))
+                                .build(), link.getUrl().toString())
+
         );
     }
 
