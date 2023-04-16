@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 import ru.tinkoff.edu.java.bot.configuration.BotProperties;
 import ru.tinkoff.edu.java.bot.configuration.ScrapperClientConfig;
-import ru.tinkoff.edu.java.bot.service.Bot;
-import ru.tinkoff.edu.java.bot.service.TelegramRefresherBot;
+import ru.tinkoff.edu.java.bot.bot.Bot;
+import ru.tinkoff.edu.java.bot.bot.TelegramRefresherBot;
 
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationConfig.class, BotProperties.class, ScrapperClientConfig.class})

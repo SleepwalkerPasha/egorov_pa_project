@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.bot.service.processor;
+package ru.tinkoff.edu.java.bot.bot.processor;
 
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.tinkoff.edu.java.bot.service.commands.*;
+import ru.tinkoff.edu.java.bot.bot.commands.*;
 import ru.tinkoff.edu.java.bot.storage.InMemoryLinkStorage;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
 

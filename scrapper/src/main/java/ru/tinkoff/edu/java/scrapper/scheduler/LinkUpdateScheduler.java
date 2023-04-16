@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import ru.tinkoff.edu.java.scrapper.service.updater.LinkUpdater;
+import ru.tinkoff.edu.java.scrapper.updater.LinkUpdater;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;

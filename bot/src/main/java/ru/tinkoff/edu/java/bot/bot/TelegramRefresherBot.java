@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.bot.service;
+package ru.tinkoff.edu.java.bot.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.BotCommand;
@@ -8,8 +8,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
-import ru.tinkoff.edu.java.bot.service.commands.Command;
-import ru.tinkoff.edu.java.bot.service.processor.UserMessageProcessor;
+import ru.tinkoff.edu.java.bot.bot.commands.Command;
+import ru.tinkoff.edu.java.bot.bot.processor.UserMessageProcessor;
 
 import java.time.OffsetDateTime;
 import java.util.List;

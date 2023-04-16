@@ -1,26 +1,25 @@
-package ru.tinkoff.edu.java.bot.service.commands;
+package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
 
-public class UntrackCommand implements Command{
+public class TrackCommand implements Command{
 
     private final LinkStorage storage;
 
-    public UntrackCommand(LinkStorage storage) {
+    public TrackCommand(LinkStorage storage) {
         this.storage = storage;
     }
 
-
     @Override
     public String command() {
-        return "/untrack";
+        return "/track";
     }
 
     @Override
     public String description() {
-        return "прекратить отслеживание ссылки\nвведите команду в формате: " + command() + " url";
+        return "начать отслеживание ссылки\nвведите команду в формате: " + command() + " url";
     }
 
     @Override
@@ -30,7 +29,7 @@ public class UntrackCommand implements Command{
         if (split.length == 1)
             return new SendMessage(chatId, description());
         String url = split[1];
-        storage.untrackLink(chatId, url);
-        return new SendMessage(chatId, "Ссылка больше не отслеживается");
+        storage.trackLink(chatId, url);
+        return new SendMessage(chatId, "Ссылка теперь отслеживается");
     }
 }

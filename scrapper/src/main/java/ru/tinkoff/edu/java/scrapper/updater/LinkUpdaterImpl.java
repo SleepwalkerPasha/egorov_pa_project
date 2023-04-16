@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.service.updater;
+package ru.tinkoff.edu.java.scrapper.updater;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

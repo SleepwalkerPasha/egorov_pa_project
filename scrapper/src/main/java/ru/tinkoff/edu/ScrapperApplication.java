@@ -3,11 +3,11 @@ package ru.tinkoff.edu;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import ru.tinkoff.edu.java.scrapper.client.GithubClient;
-import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfigProperties;
-import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
 import ru.tinkoff.edu.java.scrapper.configuration.ClientConfigProperties;
+import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
+import ru.tinkoff.edu.java.scrapper.updater.LinkUpdater;
+import ru.tinkoff.edu.java.scrapper.updater.LinkUpdaterImpl;
 
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationConfigProperties.class, ClientConfigProperties.class})
@@ -20,10 +20,8 @@ public class ScrapperApplication {
         ClientConfiguration clientConfiguration = ctx.getBean(ClientConfiguration.class);
         System.out.println(clientConfiguration);
 
-        GithubClient githubWebClient = ctx.getBean(GithubClient.class);
-        System.out.println(githubWebClient.fetchRepository("SleepwalkerPasha", "egorov_pa_project"));
+        LinkUpdater linkUpdater = ctx.getBean(LinkUpdaterImpl.class);
 
-        StackOverflowClient stackOverflowWebClient = ctx.getBean(StackOverflowClient.class);
-        System.out.println(stackOverflowWebClient.fetchQuestion("54341037"));
+        System.out.println(linkUpdater.update());
     }
 }
