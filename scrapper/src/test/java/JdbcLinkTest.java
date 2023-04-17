@@ -9,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatRepository;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ public class JdbcLinkTest extends DatabaseIntegrationTest {
         Link link = new Link();
         link.setUrl(URI.create("https://github.com/sanyarnd/tinkoff-java-course-2022/"));
         link.setTgId(tgId);
+        link.setCheckedAt(OffsetDateTime.now());
+        link.setUpdatedAt(OffsetDateTime.now());
 
         Long addedTgChatId = chatRepository.add(tgId);
 
@@ -53,6 +56,8 @@ public class JdbcLinkTest extends DatabaseIntegrationTest {
         Link link = new Link();
         link.setUrl(URI.create("https://github.com/sanyarnd/tinkoff-java-course-2022/"));
         link.setTgId(tgId);
+        link.setCheckedAt(OffsetDateTime.now());
+        link.setUpdatedAt(OffsetDateTime.now());
 
         Long addedTgChatId = chatRepository.add(tgId);
         Link newLink = linkRepository.add(link);
@@ -72,6 +77,8 @@ public class JdbcLinkTest extends DatabaseIntegrationTest {
         Link link = new Link();
         link.setUrl(URI.create("https://github.com/sanyarnd/tinkoff-java-course-2022/"));
         link.setTgId(tgId);
+        link.setCheckedAt(OffsetDateTime.now());
+        link.setUpdatedAt(OffsetDateTime.now());
 
         Long addedTgChatId = chatRepository.add(tgId);
         Link newLink = linkRepository.add(link);
@@ -93,6 +100,8 @@ public class JdbcLinkTest extends DatabaseIntegrationTest {
         Link link = new Link();
         link.setUrl(URI.create("https://github.com/sanyarnd/tinkoff-java-course-2022/"));
         link.setTgId(tgId);
+        link.setCheckedAt(OffsetDateTime.now());
+        link.setUpdatedAt(OffsetDateTime.now());
 
         Long addedTgChatId = chatRepository.add(tgId);
         Link newLink = linkRepository.add(link);

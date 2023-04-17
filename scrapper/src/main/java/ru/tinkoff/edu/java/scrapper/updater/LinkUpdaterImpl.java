@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.updater;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.client.BotClient;
@@ -23,6 +25,7 @@ import java.util.List;
 
 
 @Service
+@Slf4j
 public class LinkUpdaterImpl implements LinkUpdater {
 
     private final GithubClient githubClient;
@@ -42,8 +45,8 @@ public class LinkUpdaterImpl implements LinkUpdater {
     public LinkUpdaterImpl(GithubClient githubClient,
                            StackOverflowClient stackOverflowClient,
                            BotClient botClient,
-                           LinkRepository linkRepository,
-                           TgChatRepository tgChatRepository,
+                           @Qualifier("JdbcLinkRepository") LinkRepository linkRepository,
+                           @Qualifier("JdbcTgChatRepository") TgChatRepository tgChatRepository,
                            Long daysOffset,
                            AbstractParser parser) {
         this.githubClient = githubClient;
@@ -103,6 +106,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
                     .url(link.getUrl().toString())
                     .tgChatIds(chatIds)
                     .build());
+            log.info("обновили данные о вопросе со StackOverflow");
             return chatIds.size();
         }
         return 0;
@@ -134,6 +138,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
                     .url(link.getUrl().toString())
                     .tgChatIds(chatIds)
                     .build());
+            log.info("обновили данные о репозитории с Github");
             return chatIds.size();
         }
         return 0;

@@ -46,7 +46,7 @@ public class JdbcLinkRepository implements LinkRepository {
             preparedStatement.setString(1, strUrl);
             preparedStatement.setLong(2, link.getTgId());
             preparedStatement.setTimestamp(3, Timestamp.valueOf(link.getCheckedAt().toLocalDateTime()));
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(link.getCheckedAt().toLocalDateTime()));
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(link.getUpdatedAt().toLocalDateTime()));
             return preparedStatement;
         }, keyHolder);
         link.setId((Long) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
@@ -106,7 +106,7 @@ public class JdbcLinkRepository implements LinkRepository {
     @Override
     public Collection<Link> findOldLinks(OffsetDateTime checkedTime) {
         String sql = "SELECT * FROM link WHERE checked_at <= ?";
-        return jdbcTemplate.query(sql, linkRowMapper);
+        return jdbcTemplate.query(sql, linkRowMapper, checkedTime);
     }
 
     @Override
