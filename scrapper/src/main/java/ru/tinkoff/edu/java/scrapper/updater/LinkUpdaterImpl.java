@@ -85,7 +85,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
         Integer questionId = parseResult.id();
         StackOverflowResponse stackOverflowResponse = stackOverflowClient.fetchQuestion(questionId.toString());
         if (link.getUpdatedAt().isBefore(stackOverflowResponse.lastActivityDate())) {
-            List<Long> chatIds = tgChatRepository.findByLink(link.getId()).stream().toList();
+            List<Long> chatIds = tgChatRepository.findByLinkId(link.getId()).stream().toList();
             List<String> description = new ArrayList<>();
             description.add("Обновление вопроса на StackOverflow");
             LinkInfo linkInfo = linkRepository.getLinkInfo(link);
@@ -117,7 +117,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
         String username = parseResult.name();
         GithubResponse githubResponse = githubClient.fetchRepository(username, repoName);
         if (link.getUpdatedAt().isBefore(githubResponse.pushedAt())) {
-            List<Long> chatIds = tgChatRepository.findByLink(link.getId()).stream().toList();
+            List<Long> chatIds = tgChatRepository.findByLinkId(link.getId()).stream().toList();
             List<String> description = new ArrayList<>();
             description.add("Обновление репозитория на Github");
             LinkInfo linkInfo = linkRepository.getLinkInfo(link);

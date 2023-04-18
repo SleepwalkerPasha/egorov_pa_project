@@ -54,7 +54,7 @@ public class JdbcTgChatRepository implements TgChatRepository {
     }
 
     @Override
-    public Collection<Long> findByLink(long id) {
+    public Collection<Long> findByLinkId(long id) {
         var sql = "SELECT l.tg_id FROM link AS l LEFT JOIN chat c on c.id = l.tg_id WHERE l.id = ?";
         return jdbcTemplate.query(sql, tgChatRowMapper(), id);
     }

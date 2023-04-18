@@ -5,7 +5,7 @@ CREATE SEQUENCE IF NOT EXISTS link_id_seq;
 
 --changeset  sleepwalker:02-create-link-table
 CREATE TABLE IF NOT EXISTS LINK(
-    ID BIGINT UNIQUE NOT NULL PRIMARY KEY DEFAULT nextval('link_id_seq'),
+    ID BIGINT DEFAULT nextval('link_id_seq') UNIQUE NOT NULL  PRIMARY KEY,
     URL VARCHAR(2048) NOT NULL,
     TG_ID BIGINT,
     CHECKED_AT timestamp,

@@ -6,8 +6,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import ru.tinkoff.edu.java.scrapper.configuration.ApplicationConfigProperties;
 import ru.tinkoff.edu.java.scrapper.configuration.ClientConfigProperties;
 import ru.tinkoff.edu.java.scrapper.configuration.ClientConfiguration;
-import ru.tinkoff.edu.java.scrapper.updater.LinkUpdater;
-import ru.tinkoff.edu.java.scrapper.updater.LinkUpdaterImpl;
 
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationConfigProperties.class, ClientConfigProperties.class})
@@ -19,9 +17,5 @@ public class ScrapperApplication {
 
         ClientConfiguration clientConfiguration = ctx.getBean(ClientConfiguration.class);
         System.out.println(clientConfiguration);
-
-        LinkUpdater linkUpdater = ctx.getBean(LinkUpdaterImpl.class);
-
-        System.out.println(linkUpdater.update());
     }
 }
