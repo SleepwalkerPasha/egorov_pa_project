@@ -1,18 +1,21 @@
 package ru.tinkoff.edu.java.scrapper.repository.jooq;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.ChatRecord;
+import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
+import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.tables.Chat.CHAT;
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.tables.Link.LINK;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.CHAT;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINK;
 
 
 @Repository
@@ -27,19 +30,22 @@ public class JooqTgChatRepository implements TgChatRepository {
     }
 
     @Override
+    @Transactional
     public long add(long chatId) {
-        return Objects.requireNonNull(jooq.insertInto(CHAT, CHAT.ID)
-                        .values(chatId)
-                        .returningResult(CHAT.ID)
-                        .fetchOne())
-                .map(record -> {
-                    ChatRecord chatRecord = (ChatRecord) record.get(0);
-                    return chatRecord.get(CHAT.ID);
-                });
+        if (findByTgChatId(chatId).isPresent())
+            throw new BadRequestException("данный пользователь уже зарегистрирован");
+
+        jooq.insertInto(CHAT, CHAT.ID)
+                .values(chatId)
+                .execute();
+        return chatId;
     }
 
     @Override
+    @Transactional
     public long remove(long chatId) {
+        if (findByTgChatId(chatId).isEmpty())
+            throw new NotFoundException("данный пользователь не зарегистрирован");
         jooq.deleteFrom(CHAT)
                 .where(CHAT.ID.eq(chatId))
                 .execute();
@@ -48,7 +54,8 @@ public class JooqTgChatRepository implements TgChatRepository {
 
     @Override
     public Collection<Long> findAll() {
-        return jooq.selectFrom(CHAT)
+        return jooq.select(CHAT)
+                .from(CHAT)
                 .fetch()
                 .map(record -> {
                     ChatRecord chatRecord = (ChatRecord) record.get(0);
@@ -72,13 +79,15 @@ public class JooqTgChatRepository implements TgChatRepository {
 
     @Override
     public Optional<Long> findByTgChatId(long id) {
-        return Optional.of(jooq.selectFrom(CHAT)
+        Record one = jooq.select()
+                .from(CHAT)
                 .where(CHAT.ID.eq(id))
-                .fetchOne()
-                .map(record -> {
-                    ChatRecord chatRecord = (ChatRecord) record.get(0);
-                    return chatRecord.get(CHAT.ID);
-                }));
+                .fetchOne();
+        if (one == null) return Optional.empty();
+        else return Optional.of(one.map(record -> {
+            ChatRecord chatRecord = (ChatRecord) record.get(0);
+            return chatRecord.get(CHAT.ID);
+        }));
     }
 
 }

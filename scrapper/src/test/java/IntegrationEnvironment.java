@@ -14,6 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.mapper.LinkMapper;
 
 import javax.sql.DataSource;
@@ -47,26 +48,6 @@ public abstract class IntegrationEnvironment {
                     .username(DB_CONTAINER.getUsername())
                     .password(DB_CONTAINER.getPassword())
                     .build();
-        }
-
-        @Bean
-        public JdbcTemplate transferJdbcTemplate() {
-            return new JdbcTemplate(transferDataSource());
-        }
-
-        @Bean
-        public JdbcLinkRepository transferJdbcLinkRepository() {
-            return new JdbcLinkRepository(transferJdbcTemplate(), transferLinkMapper());
-        }
-
-        @Bean
-        public RowMapper<Link> transferLinkMapper() {
-            return new LinkMapper();
-        }
-
-        @Bean
-        public JdbcTgChatRepository transferJdbcTgChatRepository() {
-            return new JdbcTgChatRepository(transferJdbcTemplate());
         }
 
         @Bean

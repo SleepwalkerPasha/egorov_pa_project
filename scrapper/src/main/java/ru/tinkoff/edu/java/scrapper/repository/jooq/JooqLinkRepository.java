@@ -1,8 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repository.jooq;
 
 import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.RecordMapper;
+import org.jooq.Record;
 import org.jooq.UpdateSetMoreStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +17,7 @@ import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Optional;
 
-import static ru.tinkoff.edu.java.scrapper.domain.jooq.tables.Link.LINK;
+import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINK;
 
 @Repository
 @Qualifier("JooqLinkRepository")
@@ -29,6 +28,19 @@ public class JooqLinkRepository implements LinkRepository {
     @Autowired
     public JooqLinkRepository(DSLContext jooq) {
         this.jooq = jooq;
+    }
+
+    private Link map(Record record) {
+        LinkRecord linkRecord = (LinkRecord) record.get(0);
+        return new Link(linkRecord.getValue(LINK.ID),
+                URI.create(linkRecord.getValue(LINK.URL)),
+                linkRecord.getValue(LINK.TG_ID),
+                linkRecord.getValue(LINK.CHECKED_AT).atOffset(ZoneOffset.UTC),
+                linkRecord.getValue(LINK.UPDATE_AT).atOffset(ZoneOffset.UTC),
+                linkRecord.getValue(LINK.FORKS_COUNT),
+                linkRecord.getValue(LINK.ANSWER_COUNT),
+                linkRecord.getValue(LINK.OPEN_ISSUES_COUNT),
+                linkRecord.getValue(LINK.COMMENT_COUNT));
     }
 
     @Override
@@ -96,44 +108,33 @@ public class JooqLinkRepository implements LinkRepository {
                 .from(LINK)
                 .where(LINK.URL.eq(link.getUrl().toString()))
                 .fetch()
-                .map(mapper()).stream().findFirst();
+                .map(this::map).stream().findFirst();
     }
 
     @Override
     public Collection<Link> findAllLinksById(long tgChatId) {
         return jooq.select(LINK)
+                .from(LINK)
                 .where(LINK.TG_ID.eq(tgChatId))
                 .fetch()
-                .map(mapper());
+                .map(this::map);
     }
 
     @Override
     public Collection<Link> findAll() {
         return jooq.select(LINK)
+                .from(LINK)
                 .fetch()
-                .map(mapper());
+                .map(this::map);
     }
 
     @Override
     public Collection<Link> findOldLinks(OffsetDateTime checkedTime) {
         return jooq.select(LINK)
+                .from(LINK)
                 .where(LINK.CHECKED_AT.lessOrEqual(checkedTime.toLocalDateTime()))
                 .fetch()
-                .map(mapper());
+                .map(this::map);
     }
 
-    private RecordMapper<Record1<LinkRecord>, Link> mapper() {
-        return record1 -> {
-            LinkRecord linkRecord = (LinkRecord) record1.get(0);
-            return new Link(linkRecord.getValue(LINK.ID),
-                    URI.create(linkRecord.getValue(LINK.URL)),
-                    linkRecord.getValue(LINK.TG_ID),
-                    linkRecord.getValue(LINK.CHECKED_AT).atOffset(ZoneOffset.UTC),
-                    linkRecord.getValue(LINK.UPDATE_AT).atOffset(ZoneOffset.UTC),
-                    linkRecord.getValue(LINK.FORKS_COUNT),
-                    linkRecord.getValue(LINK.ANSWER_COUNT),
-                    linkRecord.getValue(LINK.OPEN_ISSUES_COUNT),
-                    linkRecord.getValue(LINK.COMMENT_COUNT));
-        };
-    }
 }
