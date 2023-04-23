@@ -2,14 +2,15 @@ package ru.tinkoff.edu;
 
 import liquibase.Contexts;
 import liquibase.LabelExpression;
+import liquibase.database.Database;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import liquibase.resource.ResourceAccessor;
 import org.jooq.codegen.GenerationTool;
 import org.jooq.meta.jaxb.Configuration;
-import org.jooq.meta.jaxb.Database;
 import org.jooq.meta.jaxb.Generate;
 import org.jooq.meta.jaxb.Generator;
 import org.jooq.meta.jaxb.Jdbc;
@@ -39,10 +40,13 @@ public class JooqCodegen {
             dataSource.setUsername(DB_CONTAINER.getUsername());
             dataSource.setPassword(DB_CONTAINER.getPassword());
             Connection connection = dataSource.getConnection();
-            Path path = new File(".").toPath().toAbsolutePath().normalize();
-            liquibase.database.Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Path path = new File(".").toPath().toAbsolutePath()
+                    .getParent()
+                    .getParent();
+            ResourceAccessor resourceAccessor = new DirectoryResourceAccessor(path);
             Liquibase liquibase = new liquibase.Liquibase(MASTER_PATH,
-                    new DirectoryResourceAccessor(path), database);
+                   resourceAccessor, database);
             liquibase.update(new Contexts(), new LabelExpression());
         } catch (SQLException | LiquibaseException | FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -73,7 +77,7 @@ public class JooqCodegen {
                                 .withFluentSetters(false)
                                 .withDaos(false)
                                 .withPojos(false))
-                        .withDatabase(new Database()
+                        .withDatabase(new org.jooq.meta.jaxb.Database()
                                 .withName("org.jooq.meta.postgres.PostgresDatabase")
                                 .withInputSchema("public"))
                         .withTarget(new Target()

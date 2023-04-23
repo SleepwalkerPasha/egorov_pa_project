@@ -1,8 +1,6 @@
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -11,11 +9,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinkRepository;
-import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatRepository;
-import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinkRepository;
-import ru.tinkoff.edu.java.scrapper.repository.mapper.LinkMapper;
 
 import javax.sql.DataSource;
 
