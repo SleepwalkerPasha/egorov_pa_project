@@ -89,11 +89,11 @@ public class LinkUpdaterImpl implements LinkUpdater {
             List<String> description = new ArrayList<>();
             description.add("Обновление вопроса на StackOverflow");
             Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
-            if (!linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
+            if (linkInfo.getAnswerCount() != null && !linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
                 description
                         .add(String.format("Изменилось число ответов на вопрос - %d",
                                 stackOverflowResponse.answerCount()));
-            else if (!linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
+            else if (linkInfo.getCommentCount() != null && !linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
                 description
                         .add(String.format("Изменилось число комментариев под вопросом - %d",
                                 stackOverflowResponse.commentCount()));
@@ -121,11 +121,11 @@ public class LinkUpdaterImpl implements LinkUpdater {
             List<String> description = new ArrayList<>();
             description.add("Обновление репозитория на Github");
             Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
-            if (!linkInfo.getForksCount().equals(githubResponse.forksCount()))
+            if (linkInfo.getForksCount() != null && !linkInfo.getForksCount().equals(githubResponse.forksCount()))
                 description
                         .add(String.format("Изменилось число форков - %d",
                                 githubResponse.forksCount()));
-            else if (!linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
+            else if (linkInfo.getOpenIssuesCount() != null && !linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
                 description
                         .add(String.format("Изменилось число тикетов - %d",
                                 githubResponse.openIssuesCount()));
