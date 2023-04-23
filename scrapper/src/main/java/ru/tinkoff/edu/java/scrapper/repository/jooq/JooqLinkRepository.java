@@ -3,20 +3,19 @@ package ru.tinkoff.edu.java.scrapper.repository.jooq;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.RecordMapper;
+import org.jooq.UpdateSetMoreStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.LinkRecord;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.scrapper.dto.db.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.tables.Link.LINK;
@@ -37,14 +36,19 @@ public class JooqLinkRepository implements LinkRepository {
     public Link add(Link link) {
         if (getLink(link).isPresent())
             return link;
-        long id = Objects.requireNonNull(jooq.insertInto(LINK, LINK.URL, LINK.UPDATE_AT, LINK.CHECKED_AT, LINK.TG_ID)
+        long id = jooq.insertInto(LINK, LINK.URL, LINK.UPDATE_AT, LINK.CHECKED_AT, LINK.TG_ID,
+                        LINK.OPEN_ISSUES_COUNT, LINK.FORKS_COUNT, LINK.ANSWER_COUNT, LINK.COMMENT_COUNT)
                 .values(link.getUrl().toString(),
                         link.getUpdatedAt().toLocalDateTime(),
                         link.getCheckedAt().toLocalDateTime(),
-                        link.getTgId())
+                        link.getTgId(),
+                        link.getOpenIssuesCount(),
+                        link.getForksCount(),
+                        link.getAnswerCount(),
+                        link.getCommentCount())
                 .returningResult(LINK.ID)
                 .fetchOne()
-        ).map(record -> record.get(LINK.ID));
+                .map(record -> record.get(LINK.ID));
         link.setId(id);
         return link;
     }
@@ -60,33 +64,31 @@ public class JooqLinkRepository implements LinkRepository {
 
     @Override
     public Link update(Link link) {
-        jooq.update(LINK)
+        UpdateSetMoreStep<LinkRecord> set = jooq.update(LINK)
                 .set(LINK.CHECKED_AT, OffsetDateTime.now().toLocalDateTime())
-                .set(LINK.UPDATE_AT, link.getUpdatedAt().toLocalDateTime())
-                .where(LINK.ID.eq(link.getId()))
-                .execute();
+                .set(LINK.UPDATE_AT, link.getUpdatedAt().toLocalDateTime());
+
+        if (link.getOpenIssuesCount() == null)
+            set = set.setNull(LINK.OPEN_ISSUES_COUNT);
+        else
+            set = set.set(LINK.OPEN_ISSUES_COUNT, link.getOpenIssuesCount());
+        if (link.getForksCount() == null)
+            set = set.setNull(LINK.FORKS_COUNT);
+        else
+            set = set.set(LINK.FORKS_COUNT, link.getForksCount());
+        if (link.getAnswerCount() == null)
+            set = set.setNull(LINK.ANSWER_COUNT);
+        else
+            set = set.set(LINK.ANSWER_COUNT, link.getAnswerCount());
+        if (link.getCommentCount() == null)
+            set = set.setNull(LINK.COMMENT_COUNT);
+        else
+            set = set.set(LINK.COMMENT_COUNT, link.getCommentCount());
+
+        set.where(LINK.ID.eq(link.getId())).execute();
         return link;
     }
 
-    @Override
-    public LinkInfo getLinkInfo(Link link) {
-        return jooq.select(LINK.ID, LINK.OPEN_ISSUES_COUNT, LINK.FORKS_COUNT, LINK.ANSWER_COUNT, LINK.COMMENT_COUNT)
-                .from(LINK)
-                .where(LINK.URL.eq(link.getUrl().toString()))
-                .fetch()
-                .map(record -> {
-                    LinkRecord linkRecord = (LinkRecord) record;
-                    return LinkInfo.builder().id(linkRecord.getValue(LINK.ID))
-                            .forksCount(linkRecord.getValue(LINK.FORKS_COUNT))
-                            .answerCount(linkRecord.getValue(LINK.ANSWER_COUNT))
-                            .openIssuesCount(linkRecord.getValue(LINK.OPEN_ISSUES_COUNT))
-                            .commentCount(linkRecord.getValue(LINK.COMMENT_COUNT))
-                            .build();
-                })
-                .stream()
-                .findFirst()
-                .orElse(null);
-    }
 
     @Override
     public Optional<Link> getLink(Link link) {
@@ -127,7 +129,11 @@ public class JooqLinkRepository implements LinkRepository {
                     URI.create(linkRecord.getValue(LINK.URL)),
                     linkRecord.getValue(LINK.TG_ID),
                     linkRecord.getValue(LINK.CHECKED_AT).atOffset(ZoneOffset.UTC),
-                    linkRecord.getValue(LINK.UPDATE_AT).atOffset(ZoneOffset.UTC));
+                    linkRecord.getValue(LINK.UPDATE_AT).atOffset(ZoneOffset.UTC),
+                    linkRecord.getValue(LINK.FORKS_COUNT),
+                    linkRecord.getValue(LINK.ANSWER_COUNT),
+                    linkRecord.getValue(LINK.OPEN_ISSUES_COUNT),
+                    linkRecord.getValue(LINK.COMMENT_COUNT));
         };
     }
 }

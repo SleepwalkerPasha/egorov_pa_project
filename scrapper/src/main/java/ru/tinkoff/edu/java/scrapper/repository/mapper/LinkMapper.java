@@ -17,6 +17,10 @@ public class LinkMapper implements RowMapper<Link> {
                 URI.create(rs.getString("url")),
                 rs.getLong("tg_id"),
                 rs.getTimestamp("checked_at").toLocalDateTime().atOffset(ZoneOffset.UTC),
-                rs.getTimestamp("update_at").toLocalDateTime().atOffset(ZoneOffset.UTC));
+                rs.getTimestamp("update_at").toLocalDateTime().atOffset(ZoneOffset.UTC),
+                rs.getInt("forks_count"),
+                rs.getInt("answer_count"),
+                rs.getInt("open_issues_count"),
+                rs.getInt("comment_count"));
     }
 }

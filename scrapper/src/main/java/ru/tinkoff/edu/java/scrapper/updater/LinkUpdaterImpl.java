@@ -8,10 +8,10 @@ import ru.tinkoff.edu.java.scrapper.client.BotClient;
 import ru.tinkoff.edu.java.scrapper.client.GithubClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.scrapper.dto.db.LinkInfo;
 import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
+import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.parser.AbstractParser;
@@ -88,7 +88,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
             List<Long> chatIds = tgChatRepository.findByLinkId(link.getId()).stream().toList();
             List<String> description = new ArrayList<>();
             description.add("Обновление вопроса на StackOverflow");
-            LinkInfo linkInfo = linkRepository.getLinkInfo(link);
+            Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
             if (!linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
                 description
                         .add(String.format("Изменилось число ответов на вопрос - %d",
@@ -120,7 +120,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
             List<Long> chatIds = tgChatRepository.findByLinkId(link.getId()).stream().toList();
             List<String> description = new ArrayList<>();
             description.add("Обновление репозитория на Github");
-            LinkInfo linkInfo = linkRepository.getLinkInfo(link);
+            Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
             if (!linkInfo.getForksCount().equals(githubResponse.forksCount()))
                 description
                         .add(String.format("Изменилось число форков - %d",
