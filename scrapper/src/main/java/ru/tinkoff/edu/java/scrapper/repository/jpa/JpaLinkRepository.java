@@ -1,8 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.repository.jpa;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
@@ -16,8 +14,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
-@Qualifier("JpaLinkRepository")
 @RequiredArgsConstructor
 public class JpaLinkRepository implements LinkRepository {
 

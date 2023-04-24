@@ -1,11 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.repository.jooq;
 
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.UpdateSetMoreStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.LinkRecord;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
@@ -19,16 +17,10 @@ import java.util.Optional;
 
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINK;
 
-@Repository
-@Qualifier("JooqLinkRepository")
+@RequiredArgsConstructor
 public class JooqLinkRepository implements LinkRepository {
 
     private final DSLContext jooq;
-
-    @Autowired
-    public JooqLinkRepository(DSLContext jooq) {
-        this.jooq = jooq;
-    }
 
     private Link map(Record record) {
         LinkRecord linkRecord = (LinkRecord) record.get(0);

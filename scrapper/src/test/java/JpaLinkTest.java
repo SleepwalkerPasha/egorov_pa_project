@@ -6,8 +6,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaLinkRepository;
-import ru.tinkoff.edu.java.scrapper.repository.jpa.JpaTgChatRepository;
+import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
+import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JpaLinkTest extends DatabaseIntegrationTest {
 
     @Autowired
-    private JpaLinkRepository linkRepository;
+    private LinkRepository linkRepository;
 
     @Autowired
-    private JpaTgChatRepository chatRepository;
+    private TgChatRepository chatRepository;
 
     @Transactional
     @Rollback

@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.support.DataAccessUtils;
@@ -21,19 +22,12 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository
-@Qualifier("JdbcLinkRepository")
+@RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Link> linkRowMapper;
-
-    @Autowired
-    public JdbcLinkRepository(JdbcTemplate jdbcTemplate, RowMapper<Link> linkRowMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.linkRowMapper = linkRowMapper;
-    }
 
     @Override
     @Transactional

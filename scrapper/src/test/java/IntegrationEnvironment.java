@@ -1,6 +1,10 @@
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -9,6 +13,15 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import ru.tinkoff.edu.java.scrapper.dto.db.Link;
+import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
+import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcLinkRepository;
+import ru.tinkoff.edu.java.scrapper.repository.jdbc.JdbcTgChatRepository;
+import ru.tinkoff.edu.java.scrapper.service.LinkService;
+import ru.tinkoff.edu.java.scrapper.service.TgChatService;
+import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcLinkService;
+import ru.tinkoff.edu.java.scrapper.service.jdbc.JdbcTgChatService;
 
 import javax.sql.DataSource;
 
@@ -51,4 +64,33 @@ public abstract class IntegrationEnvironment {
         }
 
     }
+
+//    @Configuration
+//    @RequiredArgsConstructor
+//    static class JdbcAccessConfiguration{
+//
+//        private final RowMapper<Link> linkRowMapper;
+//
+//        private final JdbcTemplate jdbcTemplate;
+//
+//        @Bean
+//        public LinkRepository transferJdbcLinkRepository() {
+//            return new JdbcLinkRepository(jdbcTemplate, linkRowMapper);
+//        }
+//
+//        @Bean
+//        public TgChatRepository transferJdbcTgChatRepository() {
+//            return new JdbcTgChatRepository(jdbcTemplate);
+//        }
+//
+//        @Bean
+//        public LinkService transferJdbcLinkService() {
+//            return new JdbcLinkService(transferJdbcLinkRepository(), transferJdbcTgChatRepository());
+//        }
+//
+//        @Bean
+//        public TgChatService transferJdbcTgChatService() {
+//            return new JdbcTgChatService(transferJdbcTgChatRepository());
+//        }
+//    }
 }
