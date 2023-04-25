@@ -23,7 +23,6 @@ public class LinkUpdateScheduler {
     @Scheduled(fixedDelayString = "#{@getSchedulerIntervalSeconds}")
     public void update() {
         linkUpdater.update();
-        System.out.println("обновили данные в БД" + OffsetDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        log.info("обновили данные в БД");
+        log.info("обновили данные в БД {}", OffsetDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.UpdateSetMoreStep;
-import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.LinkRecord;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
@@ -36,7 +35,6 @@ public class JooqLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public Link add(Link link) {
         if (getLink(link).isPresent())
             return link;

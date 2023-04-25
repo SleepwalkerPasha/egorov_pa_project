@@ -3,7 +3,6 @@ package ru.tinkoff.edu.java.scrapper.repository.jooq;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.ChatRecord;
 import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
@@ -22,7 +21,6 @@ public class JooqTgChatRepository implements TgChatRepository {
     private final DSLContext jooq;
 
     @Override
-    @Transactional
     public long add(long chatId) {
         if (findByTgChatId(chatId).isPresent())
             throw new BadRequestException("данный пользователь уже зарегистрирован");
@@ -34,7 +32,6 @@ public class JooqTgChatRepository implements TgChatRepository {
     }
 
     @Override
-    @Transactional
     public long remove(long chatId) {
         if (findByTgChatId(chatId).isEmpty())
             throw new NotFoundException("данный пользователь не зарегистрирован");
