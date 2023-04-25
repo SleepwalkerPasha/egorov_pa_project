@@ -6,7 +6,6 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
@@ -21,7 +20,6 @@ public class JdbcTgChatRepository implements TgChatRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Transactional
     @Override
     public long add(long chatId) {
         Optional<Long> id = findByTgChatId(chatId);
@@ -35,7 +33,6 @@ public class JdbcTgChatRepository implements TgChatRepository {
     }
 
     @Override
-    @Transactional
     public long remove(long chatId) {
         Optional<Long> id = findByTgChatId(chatId);
         if (id.isEmpty())

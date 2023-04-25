@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 
@@ -36,7 +35,6 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
     public Link add(Link link) {
         if (getLink(link).isPresent())
             return link;

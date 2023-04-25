@@ -82,30 +82,26 @@ public class LinkUpdaterImpl implements LinkUpdater {
     }
 
     private int checkStackOverflow(StackOverflowResult parseResult, Link link) {
-        Integer questionId = parseResult.id();
-        StackOverflowResponse stackOverflowResponse = stackOverflowClient.fetchQuestion(questionId.toString());
+
+        StackOverflowResponse stackOverflowResponse = stackOverflowClient.fetchQuestion(parseResult.id().toString());
+
         if (link.getUpdatedAt().isBefore(stackOverflowResponse.lastActivityDate())) {
+
             List<Long> chatIds = tgChatRepository.findByLinkId(link.getId()).stream().toList();
-            List<String> description = new ArrayList<>();
-            description.add("Обновление вопроса на StackOverflow");
-            Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
-            if (linkInfo.getAnswerCount() != null && !linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
-                description
-                        .add(String.format("Изменилось число ответов на вопрос - %d",
-                                stackOverflowResponse.answerCount()));
-            else if (linkInfo.getCommentCount() != null && !linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
-                description
-                        .add(String.format("Изменилось число комментариев под вопросом - %d",
-                                stackOverflowResponse.commentCount()));
-            }
+
+            List<String> description = addStackOverflowDescription(link, stackOverflowResponse);
+
             link.setUpdatedAt(stackOverflowResponse.lastActivityDate());
+
             linkRepository.update(link);
+
             botClient.linkUpdate(LinkUpdateRequest.builder()
                     .id(link.getId())
                     .description(String.join("\n", description))
                     .url(link.getUrl().toString())
                     .tgChatIds(chatIds)
                     .build());
+
             log.info("обновили данные о вопросе со StackOverflow");
             return chatIds.size();
         }
@@ -113,34 +109,64 @@ public class LinkUpdaterImpl implements LinkUpdater {
     }
 
     private int checkGithub(GithubResult parseResult, Link link) {
-        String repoName = parseResult.repoName();
-        String username = parseResult.name();
-        GithubResponse githubResponse = githubClient.fetchRepository(username, repoName);
+        GithubResponse githubResponse = githubClient.fetchRepository(parseResult.name(), parseResult.repoName());
+
         if (link.getUpdatedAt().isBefore(githubResponse.pushedAt())) {
+
             List<Long> chatIds = tgChatRepository.findByLinkId(link.getId()).stream().toList();
-            List<String> description = new ArrayList<>();
-            description.add("Обновление репозитория на Github");
-            Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
-            if (linkInfo.getForksCount() != null && !linkInfo.getForksCount().equals(githubResponse.forksCount()))
-                description
-                        .add(String.format("Изменилось число форков - %d",
-                                githubResponse.forksCount()));
-            else if (linkInfo.getOpenIssuesCount() != null && !linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
-                description
-                        .add(String.format("Изменилось число тикетов - %d",
-                                githubResponse.openIssuesCount()));
-            }
+
+            List<String> description = addGithubDescription(link, githubResponse);
+
             link.setUpdatedAt(githubResponse.pushedAt());
+
             linkRepository.update(link);
+
             botClient.linkUpdate(LinkUpdateRequest.builder()
                     .id(link.getId())
                     .description(String.join("\n", description))
                     .url(link.getUrl().toString())
                     .tgChatIds(chatIds)
                     .build());
+
             log.info("обновили данные о репозитории с Github");
             return chatIds.size();
         }
         return 0;
+    }
+
+
+    private List<String> addGithubDescription(Link link, GithubResponse githubResponse) {
+        List<String> description = new ArrayList<>();
+        description.add("Обновление репозитория на Github");
+        Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
+
+        if (linkInfo.getForksCount() != null && !linkInfo.getForksCount().equals(githubResponse.forksCount()))
+            description
+                    .add(String.format("Изменилось число форков - %d",
+                            githubResponse.forksCount()));
+        else if (linkInfo.getOpenIssuesCount() != null && !linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
+            description
+                    .add(String.format("Изменилось число тикетов - %d",
+                            githubResponse.openIssuesCount()));
+        }
+        return description;
+    }
+
+    private List<String> addStackOverflowDescription(Link link, StackOverflowResponse stackOverflowResponse) {
+        List<String> description = new ArrayList<>();
+        description.add("Обновление вопроса на StackOverflow");
+
+        Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
+
+        if (linkInfo.getAnswerCount() != null && !linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
+            description
+                    .add(String.format("Изменилось число ответов на вопрос - %d",
+                            stackOverflowResponse.answerCount()));
+        else if (linkInfo.getCommentCount() != null && !linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
+            description
+                    .add(String.format("Изменилось число комментариев под вопросом - %d",
+                            stackOverflowResponse.commentCount()));
+        }
+        return description;
     }
 }
