@@ -11,6 +11,7 @@
         <module>scrapper</module>
         <module>link-parser</module>
         <module>bot</module>
+        <module>scrapper-jooq</module>
     </modules>
 
     <properties>
@@ -29,7 +30,6 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

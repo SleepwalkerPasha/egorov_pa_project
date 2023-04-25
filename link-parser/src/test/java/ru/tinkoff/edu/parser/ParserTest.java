@@ -1,9 +1,9 @@
 package ru.tinkoff.edu.parser;
 
 import org.junit.jupiter.api.Test;
-import ru.tinkoff.edu.parser.entities.GithubResult;
-import ru.tinkoff.edu.parser.entities.ParseResult;
-import ru.tinkoff.edu.parser.entities.StackOverflowResult;
+import ru.tinkoff.edu.parser.dto.GithubResult;
+import ru.tinkoff.edu.parser.dto.ParseResult;
+import ru.tinkoff.edu.parser.dto.StackOverflowResult;
 
 import java.net.URI;
 
@@ -21,8 +21,8 @@ class ParserTest {
         GithubResult githubResult = (GithubResult) result;
 
         assertNotNull(result);
-        assertEquals("sanyarnd", githubResult.getName());
-        assertEquals("tinkoff-java-course-2022", githubResult.getRepoName());
+        assertEquals("sanyarnd", githubResult.name());
+        assertEquals("tinkoff-java-course-2022", githubResult.repoName());
         assertEquals(GithubResult.class, result.getClass());
     }
 
@@ -34,7 +34,7 @@ class ParserTest {
         StackOverflowResult stackOverflowResult = (StackOverflowResult) result;
 
         assertNotNull(result);
-        assertEquals("1642028", stackOverflowResult.getId().toString());
+        assertEquals("1642028", stackOverflowResult.id().toString());
         assertEquals(StackOverflowResult.class, result.getClass());
     }
 
