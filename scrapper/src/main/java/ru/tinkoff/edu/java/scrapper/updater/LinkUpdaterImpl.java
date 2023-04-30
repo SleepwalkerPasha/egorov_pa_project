@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.client.BotClient;
+import ru.tinkoff.edu.java.scrapper.message.sender.LinkUpdateSender;
 import ru.tinkoff.edu.java.scrapper.client.GithubClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
+import ru.tinkoff.edu.java.common.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
@@ -27,13 +27,13 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class LinkUpdaterImpl implements LinkUpdater {
+public class LinkUpdaterImpl implements ru.tinkoff.edu.java.scrapper.updater.LinkUpdater {
 
     private final GithubClient githubClient;
 
     private final StackOverflowClient stackOverflowClient;
 
-    private final BotClient botClient;
+    private final LinkUpdateSender sender;
 
     private final LinkRepository linkRepository;
 
@@ -80,7 +80,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
 
             linkRepository.update(link);
 
-            botClient.linkUpdate(LinkUpdateRequest.builder()
+            sender.linkUpdate(LinkUpdateRequest.builder()
                     .id(link.getId())
                     .description(String.join("\n", description))
                     .url(link.getUrl().toString())
@@ -106,7 +106,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
 
             linkRepository.update(link);
 
-            botClient.linkUpdate(LinkUpdateRequest.builder()
+            sender.linkUpdate(LinkUpdateRequest.builder()
                     .id(link.getId())
                     .description(String.join("\n", description))
                     .url(link.getUrl().toString())

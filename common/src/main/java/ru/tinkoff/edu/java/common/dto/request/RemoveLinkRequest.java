@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.dto.request;
+package ru.tinkoff.edu.java.common.dto.request;
 
 public record RemoveLinkRequest(String link) {
 

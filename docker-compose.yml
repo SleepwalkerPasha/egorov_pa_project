@@ -32,10 +32,23 @@ services:
     networks:
       - backend
 
+  rabbit-mq:
+    image: rabbitmq:3-management
+    volumes:
+      - rabbit-mq:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+
+
 networks:
   backend:
     driver: bridge
 
 volumes:
   scrapper-postgres:
+    { }
+  rabbit-mq:
     { }

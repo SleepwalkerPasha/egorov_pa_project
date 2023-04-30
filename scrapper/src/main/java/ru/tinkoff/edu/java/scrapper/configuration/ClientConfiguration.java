@@ -29,10 +29,6 @@ public class ClientConfiguration {
         return StackOverflowWebClient.getInstance(WebClient.builder(), properties.stackOverflowUrl());
     }
 
-    @Bean
-    public BotClient transferBotClient() {
-        return new BotWebClient(WebClient.builder(), properties.botUrl());
-    }
 
     @Bean
     public Long daysOffset() {

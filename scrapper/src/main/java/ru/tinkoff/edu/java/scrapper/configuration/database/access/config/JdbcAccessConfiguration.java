@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.configuration.accessconfig;
+package ru.tinkoff.edu.java.scrapper.configuration.database.access.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
