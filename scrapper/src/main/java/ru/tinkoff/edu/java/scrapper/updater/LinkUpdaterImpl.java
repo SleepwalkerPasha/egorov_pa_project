@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class LinkUpdaterImpl implements ru.tinkoff.edu.java.scrapper.updater.LinkUpdater {
+public class LinkUpdaterImpl implements LinkUpdater {
 
     private final GithubClient githubClient;
 

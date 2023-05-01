@@ -25,14 +25,14 @@ public class RabbitMQConfiguration {
 
     private final ApplicationConfigProperties applicationConfig;
 
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost");
-        cachingConnectionFactory.setUsername("guest");
-        cachingConnectionFactory.setPassword("guest");
-        cachingConnectionFactory.setVirtualHost("cpp");
-        return cachingConnectionFactory;
-    }
+//    @Bean
+//    public ConnectionFactory connectionFactory() {
+//        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost");
+//        cachingConnectionFactory.setUsername("guest");
+//        cachingConnectionFactory.setPassword("guest");
+//        cachingConnectionFactory.setVirtualHost("cpp");
+//        return cachingConnectionFactory;
+//    }
 
     @Bean
     public Queue transferQueue() {
