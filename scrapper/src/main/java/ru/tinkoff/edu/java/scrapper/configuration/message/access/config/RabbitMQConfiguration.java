@@ -5,6 +5,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,7 +36,10 @@ public class RabbitMQConfiguration {
 
     @Bean
     public Queue transferQueue() {
-        return new Queue(applicationConfig.queueName(), true);
+        return QueueBuilder
+                .durable(applicationConfig.queueName())
+                .withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlx")
+                .build();
     }
 
     @Bean

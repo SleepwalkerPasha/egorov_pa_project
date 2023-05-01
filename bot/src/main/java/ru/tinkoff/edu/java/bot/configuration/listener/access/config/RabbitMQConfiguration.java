@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,7 +30,14 @@ public class RabbitMQConfiguration {
 
     @Bean
     public Queue transferQueue() {
-        return new Queue(applicationConfig.queueName(), true);
+        return QueueBuilder.durable(applicationConfig.queueName()).
+                withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlx")
+                .build();
+    }
+
+    @Bean
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(applicationConfig.queueName() + ".dlq").build();
     }
 
     @Bean
@@ -35,8 +46,19 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public FanoutExchange deadLetterExchange() {
+        return new FanoutExchange(applicationConfig.exchangeName() + ".dlx", true, false);
+    }
+
+
+    @Bean
     public Binding transferBinding() {
         return BindingBuilder.bind(transferQueue()).to(transferDirectExchange()).with(applicationConfig.routingKey());
+    }
+
+    @Bean
+    public Binding deadLetterBinding() {
+        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
     }
 
     @Bean
@@ -49,4 +71,6 @@ public class RabbitMQConfiguration {
     public Listener transferReceiver() {
         return new ScrapperQueueListener(botConfiguration.transferUpdatesHandler());
     }
+
+
 }
