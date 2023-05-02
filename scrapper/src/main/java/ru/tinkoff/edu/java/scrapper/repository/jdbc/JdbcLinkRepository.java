@@ -1,13 +1,11 @@
 package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 
@@ -20,19 +18,12 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository
-@Qualifier("JdbcLinkRepository")
+@RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Link> linkRowMapper;
-
-    @Autowired
-    public JdbcLinkRepository(JdbcTemplate jdbcTemplate, RowMapper<Link> linkRowMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.linkRowMapper = linkRowMapper;
-    }
 
     @Override
     public Link add(Link link) {

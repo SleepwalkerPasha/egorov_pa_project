@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ContextConfiguration(classes = {ScrapperApplication.class, IntegrationEnvironment.IntegrationEnvironmentConfiguration.class})
-public class JdbcLinkTest extends DatabaseIntegrationTest {
+public class JpaLinkTest extends DatabaseIntegrationTest {
 
     @Autowired
     private LinkRepository linkRepository;
@@ -67,7 +67,7 @@ public class JdbcLinkTest extends DatabaseIntegrationTest {
 
         Link removedLink = linkRepository.remove(link);
 
-        Optional<Link> nullableLink = linkRepository.getLink(link);
+        Optional<Link> nullableLink = linkRepository.getLink(newLink);
 
         assertTrue(nullableLink.isEmpty());
     }

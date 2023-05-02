@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.updater;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.client.BotClient;
@@ -26,6 +26,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LinkUpdaterImpl implements LinkUpdater {
 
     private final GithubClient githubClient;
@@ -41,22 +42,6 @@ public class LinkUpdaterImpl implements LinkUpdater {
     private final Long daysOffset;
 
     private final AbstractParser parser;
-
-    public LinkUpdaterImpl(GithubClient githubClient,
-                           StackOverflowClient stackOverflowClient,
-                           BotClient botClient,
-                           @Qualifier("JdbcLinkRepository") LinkRepository linkRepository,
-                           @Qualifier("JdbcTgChatRepository") TgChatRepository tgChatRepository,
-                           Long daysOffset,
-                           AbstractParser parser) {
-        this.githubClient = githubClient;
-        this.stackOverflowClient = stackOverflowClient;
-        this.botClient = botClient;
-        this.linkRepository = linkRepository;
-        this.tgChatRepository = tgChatRepository;
-        this.daysOffset = daysOffset;
-        this.parser = parser;
-    }
 
 
     @Override

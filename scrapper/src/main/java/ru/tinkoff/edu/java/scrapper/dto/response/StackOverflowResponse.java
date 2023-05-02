@@ -8,5 +8,5 @@ import java.time.OffsetDateTime;
 public record StackOverflowResponse(@NotNull String link,
                                     @NotNull @JsonProperty(value = "last_activity_date") OffsetDateTime lastActivityDate,
                                     @NotNull @JsonProperty(value = "answer_count") Integer answerCount,
-                                    @JsonProperty(value = "comment_count") Integer commentCount) {
+                                    @JsonProperty(value = "comment_count") Integer commentCount) implements Response {
 }

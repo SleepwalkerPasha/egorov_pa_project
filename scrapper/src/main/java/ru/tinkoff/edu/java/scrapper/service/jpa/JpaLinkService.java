@@ -1,7 +1,6 @@
-package ru.tinkoff.edu.java.scrapper.service.jooq;
+package ru.tinkoff.edu.java.scrapper.service.jpa;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.dto.request.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dto.request.RemoveLinkRequest;
@@ -19,14 +18,14 @@ import java.util.Collection;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class JooqLinkService implements LinkService {
+public class JpaLinkService implements LinkService {
 
-    private final LinkRepository linkRepository;
+    private final LinkRepository jpaLinkRepository;
 
-    private final TgChatRepository tgChatRepository;
+    private final TgChatRepository jpaTgChatRepository;
+
 
     @Override
-    @Transactional
     public Link add(long tgChatId, AddLinkRequest url, Response response) {
         checkTgId(tgChatId);
         Link link = new Link();
@@ -44,32 +43,31 @@ public class JooqLinkService implements LinkService {
             link.setCommentCount(stackOverflowResponse.commentCount());
         } else
             return null;
-        return linkRepository.add(link);
+        return jpaLinkRepository.add(link);
     }
 
     @Override
-    @Transactional
     public Link remove(long tgChatId, RemoveLinkRequest url) {
         checkTgId(tgChatId);
         Link link = new Link();
         link.setTgId(tgChatId);
         link.setUrl(URI.create(url.link()));
-        return linkRepository.remove(link);
+        return jpaLinkRepository.remove(link);
     }
 
     @Override
     public Collection<Link> listAllLinksById(long tgChatId) {
         checkTgId(tgChatId);
-        return linkRepository.findAllLinksById(tgChatId);
+        return jpaLinkRepository.findAllLinksById(tgChatId);
     }
 
     @Override
     public Collection<Link> listAll() {
-        return linkRepository.findAll();
+        return jpaLinkRepository.findAll();
     }
 
     private void checkTgId(long tgChatId) {
-        Optional<Long> findId = tgChatRepository.findByTgChatId(tgChatId);
+        Optional<Long> findId = jpaTgChatRepository.findByTgChatId(tgChatId);
         if (findId.isEmpty()) {
             throw new NotFoundException("данный id не зарегистрирован");
         }
