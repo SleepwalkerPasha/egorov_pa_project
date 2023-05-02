@@ -45,7 +45,7 @@ public class RabbitMQConfiguration {
 
     @Bean
     public FanoutExchange deadLetterExchange() {
-        return new FanoutExchange(applicationConfig.exchangeName() + ".dlx", true, false);
+        return new FanoutExchange(applicationConfig.exchangeName() + ".dlx");
     }
 
 
