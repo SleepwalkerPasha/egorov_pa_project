@@ -35,12 +35,12 @@ public class JpaAccessConfiguration {
     }
 
     @Bean
-    public LinkService transferJdbcLinkService() {
-        return new JpaLinkService(transferJpaLinkRepository(), transferJpaTgChatRepository());
+    public LinkService transferJdbcLinkService(LinkRepository linkRepository, TgChatRepository tgChatRepository) {
+        return new JpaLinkService(linkRepository, tgChatRepository);
     }
 
     @Bean
-    public TgChatService transferJpaTgChatService() {
-        return new JpaTgChatService(transferJpaTgChatRepository());
+    public TgChatService transferJpaTgChatService(TgChatRepository tgChatRepository) {
+        return new JpaTgChatService(tgChatRepository);
     }
 }

@@ -37,12 +37,12 @@ public class JdbcAccessConfiguration {
     }
 
     @Bean
-    public LinkService transferJdbcLinkService() {
-        return new JdbcLinkService(transferJdbcLinkRepository(), transferJdbcTgChatRepository());
+    public LinkService transferJdbcLinkService(LinkRepository linkRepository, TgChatRepository tgChatRepository) {
+        return new JdbcLinkService(linkRepository, tgChatRepository);
     }
 
     @Bean
-    public TgChatService transferJdbcTgChatService() {
-        return new JdbcTgChatService(transferJdbcTgChatRepository());
+    public TgChatService transferJdbcTgChatService(TgChatRepository tgChatRepository) {
+        return new JdbcTgChatService(tgChatRepository);
     }
 }

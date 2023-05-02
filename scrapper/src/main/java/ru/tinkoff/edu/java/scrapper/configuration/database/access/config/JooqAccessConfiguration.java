@@ -32,12 +32,12 @@ public class JooqAccessConfiguration {
     }
 
     @Bean
-    public LinkService transferJdbcLinkService() {
-        return new JooqLinkService(transferJooqLinkRepository(), transferJooqTgChatRepository());
+    public LinkService transferJdbcLinkService(LinkRepository linkRepository, TgChatRepository tgChatRepository) {
+        return new JooqLinkService(linkRepository, tgChatRepository);
     }
 
     @Bean
-    public TgChatService transferJooqTgChatService() {
-        return new JooqTgChatService(transferJooqTgChatRepository());
+    public TgChatService transferJooqTgChatService(TgChatRepository tgChatRepository) {
+        return new JooqTgChatService(tgChatRepository);
     }
 }
