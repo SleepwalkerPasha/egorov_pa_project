@@ -1,3 +1,5 @@
+package ru.tinkoff.edu;
+
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -8,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
@@ -27,7 +28,7 @@ public class JpaLinkTest extends DatabaseIntegrationTest {
     @Autowired
     private TgChatRepository chatRepository;
 
-    @Transactional
+    @SuppressWarnings({"checkstyle:MagicNumber", "checkstyle:MultipleStringLiterals"}) @Transactional
     @Rollback
     @Test
     void addTest() {
@@ -50,7 +51,7 @@ public class JpaLinkTest extends DatabaseIntegrationTest {
         assertEquals(link.getUrl(), newLink.getUrl());
     }
 
-    @Transactional
+    @SuppressWarnings("checkstyle:MagicNumber") @Transactional
     @Rollback
     @Test
     void removeTest() {
@@ -71,7 +72,7 @@ public class JpaLinkTest extends DatabaseIntegrationTest {
         assertTrue(nullableLink.isEmpty());
     }
 
-    @Transactional
+    @SuppressWarnings("checkstyle:MagicNumber") @Transactional
     @Rollback
     @Test
     void findAllTest() {
@@ -94,7 +95,7 @@ public class JpaLinkTest extends DatabaseIntegrationTest {
         assertEquals(1, links.size());
     }
 
-    @Transactional
+    @SuppressWarnings("checkstyle:MagicNumber") @Transactional
     @Rollback
     @Test
     void findAllLinksByTgIdTest() {

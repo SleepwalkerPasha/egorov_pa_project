@@ -128,7 +128,6 @@
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
                         <violationSeverity>warning</violationSeverity>
                         <excludes>**/domain/jooq/**</excludes>
-                        <excludes>**/src/test/**</excludes>
                     </configuration>
                 </plugin>
             </plugins>

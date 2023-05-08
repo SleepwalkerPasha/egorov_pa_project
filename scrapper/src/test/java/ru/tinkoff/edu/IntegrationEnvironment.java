@@ -1,3 +1,5 @@
+package ru.tinkoff.edu;
+
 import javax.sql.DataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class IntegrationEnvironment {
 
     @Container
-    public static JdbcDatabaseContainer<?> DB_CONTAINER = new PostgreSQLContainer<>("postgres:15")
+    public static final JdbcDatabaseContainer<?> DB_CONTAINER = new PostgreSQLContainer<>("postgres:15")
         .withDatabaseName("scrapper")
         .withUsername("postgres")
         .withPassword("changeme")
@@ -29,8 +31,8 @@ public abstract class IntegrationEnvironment {
                 DB_CONTAINER.getFirstMappedPort(), DB_CONTAINER.getDatabaseName()
             )
         );
-        registry.add("spring.datasource.username", () -> DB_CONTAINER.getUsername());
-        registry.add("spring.datasource.password", () -> DB_CONTAINER.getPassword());
+        registry.add("spring.datasource.username", DB_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", DB_CONTAINER::getPassword);
     }
 
     @Configuration

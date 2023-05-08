@@ -1,15 +1,15 @@
+package ru.tinkoff.edu;
+
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Optional;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @ContextConfiguration(classes = {ScrapperApplication.class,
     IntegrationEnvironment.IntegrationEnvironmentConfiguration.class})
-public class JooqLinkTest extends DatabaseIntegrationTest {
+public class JdbcLinkTest extends DatabaseIntegrationTest {
 
     @Autowired
     private LinkRepository linkRepository;
@@ -28,9 +28,8 @@ public class JooqLinkTest extends DatabaseIntegrationTest {
     @Autowired
     private TgChatRepository chatRepository;
 
-    @Transactional
+    @SuppressWarnings({"checkstyle:MagicNumber", "checkstyle:MultipleStringLiterals"}) @Transactional
     @Rollback
-    @SneakyThrows
     @Test
     void addTest() {
         long tgId = 1234567L;
@@ -52,10 +51,9 @@ public class JooqLinkTest extends DatabaseIntegrationTest {
         assertEquals(link.getUrl(), newLink.getUrl());
     }
 
-    @Transactional
+    @SuppressWarnings("checkstyle:MagicNumber") @Transactional
     @Rollback
     @Test
-    @SneakyThrows
     void removeTest() {
         long tgId = 12345678L;
         Link link = new Link();
@@ -74,10 +72,9 @@ public class JooqLinkTest extends DatabaseIntegrationTest {
         assertTrue(nullableLink.isEmpty());
     }
 
-    @Transactional
+    @SuppressWarnings("checkstyle:MagicNumber") @Transactional
     @Rollback
     @Test
-    @SneakyThrows
     void findAllTest() {
         long tgId = 123456789L;
         Link link = new Link();
@@ -98,7 +95,7 @@ public class JooqLinkTest extends DatabaseIntegrationTest {
         assertEquals(1, links.size());
     }
 
-    @Transactional
+    @SuppressWarnings("checkstyle:MagicNumber") @Transactional
     @Rollback
     @Test
     void findAllLinksByTgIdTest() {
