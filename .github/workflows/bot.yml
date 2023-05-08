@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: bot
-  AUTHOR: SleepwalkerPasha
+  AUTHOR: sleepwalkerpasha
 
 permissions:
   packages: write
