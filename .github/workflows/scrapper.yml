@@ -3,11 +3,12 @@ on:
   push:
     paths:
       - 'scrapper/**'
+      - '.github/workflows/scrapper.yml'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: scrapper
-  AUTHOR: paegorofff
+  AUTHOR: SleepwalkerPasha
 
 permissions:
   packages: write
