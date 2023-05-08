@@ -1,13 +1,13 @@
 package ru.tinkoff.edu.parser;
 
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import ru.tinkoff.edu.parser.dto.GithubResult;
 import ru.tinkoff.edu.parser.dto.ParseResult;
 import ru.tinkoff.edu.parser.dto.StackOverflowResult;
-
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ParserTest {
 
