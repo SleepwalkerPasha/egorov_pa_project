@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.bot.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,8 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.tinkoff.edu.java.bot.dto.ApiErrorResponse;
 import ru.tinkoff.edu.java.bot.exception.ApiErrorException;
 
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @RestControllerAdvice

@@ -19,20 +19,23 @@ public class InMemoryLinkStorage implements LinkStorage {
 
     public void untrackLink(Long userId, String link) {
         Set<String> links = map.get(userId);
-        if (links != null)
+        if (links != null) {
             map.get(userId).remove(link);
+        }
     }
 
     public Set<String> getFollowedLinks(Long userId) {
         Set<String> links = map.get(userId);
-        if (links != null)
+        if (links != null) {
             return map.get(userId);
+        }
         return new HashSet<>();
     }
 
     public void trackLink(Long userId, String link) {
         Set<String> links = map.get(userId);
-        if (links != null)
+        if (links != null) {
             map.get(userId).add(link);
+        }
     }
 }

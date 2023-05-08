@@ -25,11 +25,12 @@ public class RabbitMQConfiguration {
     private final ApplicationConfig applicationConfig;
 
     private final BotConfiguration botConfiguration;
+    private final String dlqExchangeName = applicationConfig.exchangeName() + ".dlx";
 
     @Bean
     public Queue transferQueue() {
-        return QueueBuilder.durable(applicationConfig.queueName()).
-                withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlx")
+        return QueueBuilder.durable(applicationConfig.queueName())
+            .withArgument("x-dead-letter-exchange", dlqExchangeName)
                 .build();
     }
 
@@ -45,7 +46,7 @@ public class RabbitMQConfiguration {
 
     @Bean
     public FanoutExchange deadLetterExchange() {
-        return new FanoutExchange(applicationConfig.exchangeName() + ".dlx");
+        return new FanoutExchange(dlqExchangeName);
     }
 
 

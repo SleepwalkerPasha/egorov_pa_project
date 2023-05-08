@@ -2,9 +2,8 @@ package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import ru.tinkoff.edu.java.bot.storage.LinkStorage;
-
 import java.util.Set;
+import ru.tinkoff.edu.java.bot.storage.LinkStorage;
 
 public class ListCommand implements Command {
 
@@ -31,8 +30,9 @@ public class ListCommand implements Command {
     }
 
     private String formatLinkList(Set<String> links) {
-        if (links.isEmpty())
+        if (links.isEmpty()) {
             return "Список отслеживаемых ссылок пуст";
+        }
         return "Список отслеживаемых ссылок: \n" + String.join("\n", links);
     }
 }
