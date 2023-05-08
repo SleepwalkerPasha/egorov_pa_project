@@ -2,13 +2,10 @@ package ru.tinkoff.edu;
 
 import javax.sql.DataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,14 +14,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class IntegrationEnvironment {
 
     @Container
-    public static final JdbcDatabaseContainer<?> DB_CONTAINER = new PostgreSQLContainer<>("postgres:15")
+    public static final PostgreSQLContainer<?> DB_CONTAINER = new PostgreSQLContainer<>("postgres:15")
         .withDatabaseName("scrapper")
         .withUsername("postgres")
         .withPassword("changeme")
         .withExposedPorts(5432);
 
     @DynamicPropertySource
-    static void jdbcProperties(DynamicPropertyRegistry registry) {
+    static void postgresProperties(DynamicPropertyRegistry registry) {
         registry.add(
             "spring.datasource.url",
             () -> String.format("jdbc:postgresql://localhost:%d/%s",
@@ -35,7 +32,7 @@ public abstract class IntegrationEnvironment {
         registry.add("spring.datasource.password", DB_CONTAINER::getPassword);
     }
 
-    @Configuration
+    @TestConfiguration
     static class IntegrationEnvironmentConfiguration {
         @Bean
         public DataSource transferDataSource() {
@@ -44,13 +41,6 @@ public abstract class IntegrationEnvironment {
                 .username(DB_CONTAINER.getUsername())
                 .password(DB_CONTAINER.getPassword())
                 .build();
-        }
-
-        @Bean(name = "transactionManager")
-        PlatformTransactionManager platformTransactionManager() {
-            JpaTransactionManager transactionManager = new JpaTransactionManager();
-            transactionManager.setDataSource(transferDataSource());
-            return transactionManager;
         }
 
     }

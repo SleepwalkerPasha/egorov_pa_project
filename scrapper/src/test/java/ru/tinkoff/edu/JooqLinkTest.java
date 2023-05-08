@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
@@ -18,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@ContextConfiguration(classes = {ScrapperApplication.class,
+@SpringBootTest(classes = {ScrapperApplication.class,
     IntegrationEnvironment.IntegrationEnvironmentConfiguration.class})
 public class JooqLinkTest extends DatabaseIntegrationTest {
 
@@ -28,6 +28,11 @@ public class JooqLinkTest extends DatabaseIntegrationTest {
 
     @Autowired
     private TgChatRepository chatRepository;
+
+    @DynamicPropertySource
+    static void jooqProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.databaseAccessType", () -> "jooq");
+    }
 
     @SuppressWarnings({"checkstyle:MagicNumber", "checkstyle:MultipleStringLiterals"}) @Transactional
     @Rollback

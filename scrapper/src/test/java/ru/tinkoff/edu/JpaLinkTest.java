@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
@@ -17,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@ContextConfiguration(classes = {ScrapperApplication.class,
+@SpringBootTest(classes = {ScrapperApplication.class,
     IntegrationEnvironment.IntegrationEnvironmentConfiguration.class})
 public class JpaLinkTest extends DatabaseIntegrationTest {
 
@@ -27,6 +27,12 @@ public class JpaLinkTest extends DatabaseIntegrationTest {
 
     @Autowired
     private TgChatRepository chatRepository;
+
+    @DynamicPropertySource
+    static void jdbcProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.databaseAccessType", () -> "jpa");
+    }
+
 
     @SuppressWarnings({"checkstyle:MagicNumber", "checkstyle:MultipleStringLiterals"}) @Transactional
     @Rollback
