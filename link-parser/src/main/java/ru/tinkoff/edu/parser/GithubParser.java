@@ -1,10 +1,9 @@
 package ru.tinkoff.edu.parser;
 
-import ru.tinkoff.edu.parser.dto.GithubResult;
-
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import ru.tinkoff.edu.parser.dto.GithubResult;
 
 public final class GithubParser extends AbstractParser {
 
@@ -17,18 +16,21 @@ public final class GithubParser extends AbstractParser {
 
     @Override
     public GithubResult parseUrl(URI url) {
-        if (!url.getHost().equals(host))
+        if (!url.getHost().equals(host)) {
             return null;
+        }
         String path = url.getPath();
-        if (path == null)
+        if (path == null) {
             return null;
+        }
         Matcher matcher;
         String[] split = path.split("/");
         for (String s : split) {
             if (!s.isBlank()) {
                 matcher = pattern.matcher(s);
-                if (!matcher.matches())
+                if (!matcher.matches()) {
                     return null;
+                }
             }
         }
         String username = split[1];

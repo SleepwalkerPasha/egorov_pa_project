@@ -1,11 +1,10 @@
 package ru.tinkoff.edu.parser;
 
-
+import java.net.URI;
 import ru.tinkoff.edu.parser.dto.ParseResult;
 
-import java.net.URI;
 
-public abstract sealed class AbstractParser implements IParser permits GithubParser, StackOverflowParser  {
+public abstract sealed class AbstractParser implements IParser permits GithubParser, StackOverflowParser {
 
     private ParseResult data;
 
