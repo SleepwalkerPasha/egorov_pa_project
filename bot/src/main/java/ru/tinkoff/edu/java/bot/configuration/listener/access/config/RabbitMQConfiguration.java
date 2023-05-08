@@ -22,42 +22,39 @@ import ru.tinkoff.edu.java.bot.service.ScrapperQueueListener;
 @RequiredArgsConstructor
 public class RabbitMQConfiguration {
 
-    private final ApplicationConfig applicationConfig;
-
     private final BotConfiguration botConfiguration;
-    private final String dlqExchangeName = applicationConfig.exchangeName() + ".dlx";
 
     @Bean
-    public Queue transferQueue() {
+    public Queue transferQueue(ApplicationConfig applicationConfig) {
         return QueueBuilder.durable(applicationConfig.queueName())
-            .withArgument("x-dead-letter-exchange", dlqExchangeName)
-                .build();
+            .withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlx")
+            .build();
     }
 
-    @Bean
-    public Queue deadLetterQueue() {
+    @SuppressWarnings("checkstyle:MultipleStringLiterals") @Bean
+    public Queue deadLetterQueue(ApplicationConfig applicationConfig) {
         return QueueBuilder.durable(applicationConfig.queueName() + ".dlq").build();
     }
 
     @Bean
-    public DirectExchange transferDirectExchange() {
+    public DirectExchange transferDirectExchange(ApplicationConfig applicationConfig) {
         return new DirectExchange(applicationConfig.exchangeName(), true, false);
     }
 
     @Bean
-    public FanoutExchange deadLetterExchange() {
-        return new FanoutExchange(dlqExchangeName);
-    }
-
-
-    @Bean
-    public Binding transferBinding() {
-        return BindingBuilder.bind(transferQueue()).to(transferDirectExchange()).with(applicationConfig.routingKey());
+    public FanoutExchange deadLetterExchange(ApplicationConfig applicationConfig) {
+        return new FanoutExchange(applicationConfig.queueName() + ".dlq");
     }
 
     @Bean
-    public Binding deadLetterBinding() {
-        return BindingBuilder.bind(deadLetterQueue()).to(deadLetterExchange());
+    public Binding transferBinding(DirectExchange directExchange, ApplicationConfig applicationConfig) {
+        return BindingBuilder.bind(transferQueue(applicationConfig)).to(directExchange)
+            .with(applicationConfig.routingKey());
+    }
+
+    @Bean
+    public Binding deadLetterBinding(ApplicationConfig applicationConfig, FanoutExchange exchange) {
+        return BindingBuilder.bind(deadLetterQueue(applicationConfig)).to(exchange);
     }
 
     @Bean
@@ -65,11 +62,9 @@ public class RabbitMQConfiguration {
         return new Jackson2JsonMessageConverter();
     }
 
-
     @Bean
     public Listener transferReceiver() {
         return new ScrapperQueueListener(botConfiguration.transferUpdatesHandler());
     }
-
 
 }
