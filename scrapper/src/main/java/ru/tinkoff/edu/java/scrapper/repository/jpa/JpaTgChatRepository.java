@@ -1,5 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.repository.jpa;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.entity.ChatEntity;
@@ -7,11 +11,6 @@ import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.interfaces.JpaChatDao;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JpaTgChatRepository implements TgChatRepository {
@@ -21,9 +20,9 @@ public class JpaTgChatRepository implements TgChatRepository {
     @Override
     @Transactional
     public long add(long chatId) {
-        if (jpaChatDao.findById(chatId).isPresent())
+        if (jpaChatDao.findById(chatId).isPresent()) {
             throw new BadRequestException("данный пользователь уже зарегистрирован");
-        else {
+        } else {
             ChatEntity chatEntity = new ChatEntity();
             chatEntity.setId(chatId);
             jpaChatDao.save(chatEntity);
@@ -34,9 +33,9 @@ public class JpaTgChatRepository implements TgChatRepository {
     @Override
     @Transactional
     public long remove(long chatId) {
-        if (jpaChatDao.findById(chatId).isEmpty())
+        if (jpaChatDao.findById(chatId).isEmpty()) {
             throw new NotFoundException("данный пользователь не зарегистрирован");
-        else {
+        } else {
             jpaChatDao.deleteById(chatId);
             return chatId;
         }

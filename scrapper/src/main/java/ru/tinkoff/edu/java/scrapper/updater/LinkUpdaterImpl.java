@@ -1,28 +1,26 @@
 package ru.tinkoff.edu.java.scrapper.updater;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.message.sender.LinkUpdateSender;
+import ru.tinkoff.edu.java.common.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.client.GithubClient;
 import ru.tinkoff.edu.java.scrapper.client.StackOverflowClient;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.common.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
+import ru.tinkoff.edu.java.scrapper.message.sender.LinkUpdateSender;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.parser.AbstractParser;
 import ru.tinkoff.edu.parser.dto.GithubResult;
 import ru.tinkoff.edu.parser.dto.ParseResult;
 import ru.tinkoff.edu.parser.dto.StackOverflowResult;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Service
 @Slf4j
@@ -42,7 +40,7 @@ public class LinkUpdaterImpl implements LinkUpdater {
     private final Long daysOffset;
 
     private final AbstractParser parser;
-
+    private final String notFoundLinkString = "такой ссылки нет в БД";
 
     @Override
     @Transactional
@@ -57,11 +55,12 @@ public class LinkUpdaterImpl implements LinkUpdater {
         return updateResult;
     }
 
-    private int checkUpdates(ParseResult parseResult, Link link) {
-        int updateResult = 0;
+    @SuppressWarnings("checkstyle:InnerAssignment") private int checkUpdates(ParseResult parseResult, Link link) {
+        int updateResult;
         switch (parseResult.resultType()) {
             case "StackOverflowResult" -> updateResult = checkStackOverflow((StackOverflowResult) parseResult, link);
             case "GithubResult" -> updateResult = checkGithub((GithubResult) parseResult, link);
+            default -> updateResult = 0;
         }
         return updateResult;
     }
@@ -81,11 +80,11 @@ public class LinkUpdaterImpl implements LinkUpdater {
             linkRepository.update(link);
 
             sender.linkUpdate(LinkUpdateRequest.builder()
-                    .id(link.getId())
-                    .description(String.join("\n", description))
-                    .url(link.getUrl().toString())
-                    .tgChatIds(chatIds)
-                    .build());
+                .id(link.getId())
+                .description(String.join("\n", description))
+                .url(link.getUrl().toString())
+                .tgChatIds(chatIds)
+                .build());
 
             log.info("обновили данные о вопросе со StackOverflow");
             return chatIds.size();
@@ -107,11 +106,11 @@ public class LinkUpdaterImpl implements LinkUpdater {
             linkRepository.update(link);
 
             sender.linkUpdate(LinkUpdateRequest.builder()
-                    .id(link.getId())
-                    .description(String.join("\n", description))
-                    .url(link.getUrl().toString())
-                    .tgChatIds(chatIds)
-                    .build());
+                .id(link.getId())
+                .description(String.join("\n", description))
+                .url(link.getUrl().toString())
+                .tgChatIds(chatIds)
+                .build());
 
             log.info("обновили данные о репозитории с Github");
             return chatIds.size();
@@ -119,20 +118,24 @@ public class LinkUpdaterImpl implements LinkUpdater {
         return 0;
     }
 
-
     private List<String> addGithubDescription(Link link, GithubResponse githubResponse) {
         List<String> description = new ArrayList<>();
         description.add("Обновление репозитория на Github");
-        Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
+        Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException(notFoundLinkString));
 
-        if (linkInfo.getForksCount() != null && !linkInfo.getForksCount().equals(githubResponse.forksCount()))
+        if (linkInfo.getForksCount() != null && !linkInfo.getForksCount().equals(githubResponse.forksCount())) {
             description
-                    .add(String.format("Изменилось число форков - %d",
-                            githubResponse.forksCount()));
-        else if (linkInfo.getOpenIssuesCount() != null && !linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
+                .add(String.format(
+                    "Изменилось число форков - %d",
+                    githubResponse.forksCount()
+                ));
+        } else if (linkInfo.getOpenIssuesCount() != null
+            && !linkInfo.getOpenIssuesCount().equals(githubResponse.openIssuesCount())) {
             description
-                    .add(String.format("Изменилось число тикетов - %d",
-                            githubResponse.openIssuesCount()));
+                .add(String.format(
+                    "Изменилось число тикетов - %d",
+                    githubResponse.openIssuesCount()
+                ));
         }
         return description;
     }
@@ -141,16 +144,22 @@ public class LinkUpdaterImpl implements LinkUpdater {
         List<String> description = new ArrayList<>();
         description.add("Обновление вопроса на StackOverflow");
 
-        Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException("такой ссылки нет в БД"));
+        Link linkInfo = linkRepository.getLink(link).orElseThrow(() -> new NotFoundException(notFoundLinkString));
 
-        if (linkInfo.getAnswerCount() != null && !linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount()))
+        if (linkInfo.getAnswerCount() != null
+            && !linkInfo.getAnswerCount().equals(stackOverflowResponse.answerCount())) {
             description
-                    .add(String.format("Изменилось число ответов на вопрос - %d",
-                            stackOverflowResponse.answerCount()));
-        else if (linkInfo.getCommentCount() != null && !linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
+                .add(String.format(
+                    "Изменилось число ответов на вопрос - %d",
+                    stackOverflowResponse.answerCount()
+                ));
+        } else if (linkInfo.getCommentCount() != null
+            && !linkInfo.getCommentCount().equals(stackOverflowResponse.commentCount())) {
             description
-                    .add(String.format("Изменилось число комментариев под вопросом - %d",
-                            stackOverflowResponse.commentCount()));
+                .add(String.format(
+                    "Изменилось число комментариев под вопросом - %d",
+                    stackOverflowResponse.commentCount()
+                ));
         }
         return description;
     }

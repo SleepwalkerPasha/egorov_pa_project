@@ -1,13 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.scheduler;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import ru.tinkoff.edu.java.scrapper.updater.LinkUpdater;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Configuration

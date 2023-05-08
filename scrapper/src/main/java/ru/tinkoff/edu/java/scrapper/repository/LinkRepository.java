@@ -1,10 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.repository;
 
-import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Optional;
+import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 
 public interface LinkRepository {
 

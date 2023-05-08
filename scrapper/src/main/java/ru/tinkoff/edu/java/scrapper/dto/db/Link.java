@@ -2,12 +2,11 @@ package ru.tinkoff.edu.java.scrapper.dto.db;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
+import java.net.URI;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
 
 
 @Data

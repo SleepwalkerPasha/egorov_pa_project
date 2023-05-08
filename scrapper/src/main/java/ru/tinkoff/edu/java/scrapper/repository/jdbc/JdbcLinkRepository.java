@@ -1,5 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,15 +17,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-
 @RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
 
@@ -25,14 +24,15 @@ public class JdbcLinkRepository implements LinkRepository {
 
     private final RowMapper<Link> linkRowMapper;
 
-    @Override
+    @SuppressWarnings("checkstyle:MagicNumber") @Override
     public Link add(Link link) {
-        if (getLink(link).isPresent())
+        if (getLink(link).isPresent()) {
             return link;
+        }
         String strUrl = link.getUrl().toString();
-        String sql = "INSERT INTO link " +
-                "(url, tg_id, checked_at, update_at, open_issues_count, forks_count, answer_count, comment_count) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO link "
+            + "(url, tg_id, checked_at, update_at, open_issues_count, forks_count, answer_count, comment_count) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -40,28 +40,31 @@ public class JdbcLinkRepository implements LinkRepository {
             preparedStatement.setLong(2, link.getTgId());
             preparedStatement.setTimestamp(3, Timestamp.valueOf(link.getCheckedAt().toLocalDateTime()));
             preparedStatement.setTimestamp(4, Timestamp.valueOf(link.getUpdatedAt().toLocalDateTime()));
-            if (link.getOpenIssuesCount() == null)
+            if (link.getOpenIssuesCount() == null) {
                 preparedStatement.setNull(5, Types.INTEGER);
-            else
+            } else {
                 preparedStatement.setInt(5, link.getOpenIssuesCount());
-            if (link.getForksCount() == null)
+            }
+            if (link.getForksCount() == null) {
                 preparedStatement.setNull(6, Types.INTEGER);
-            else
+            } else {
                 preparedStatement.setInt(6, link.getForksCount());
-            if (link.getAnswerCount() == null)
+            }
+            if (link.getAnswerCount() == null) {
                 preparedStatement.setNull(7, Types.INTEGER);
-            else
+            } else {
                 preparedStatement.setInt(7, link.getAnswerCount());
-            if (link.getCommentCount() == null)
+            }
+            if (link.getCommentCount() == null) {
                 preparedStatement.setNull(8, Types.INTEGER);
-            else
+            } else {
                 preparedStatement.setInt(8, link.getCommentCount());
+            }
             return preparedStatement;
         }, keyHolder);
         link.setId((Long) Objects.requireNonNull(keyHolder.getKeys()).get("id"));
         return link;
     }
-
 
     @Override
     public Link remove(Link link) {
@@ -73,24 +76,26 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     public Link update(Link link) {
-        String sql = "UPDATE link SET checked_at = now(), update_at = ?, open_issues_count = ?, " +
-                "forks_count = ?, answer_count = ?, comment_count = ? WHERE id = ?";
-        jdbcTemplate.update(sql,
-                Timestamp.valueOf(link.getUpdatedAt().toLocalDateTime()),
-                link.getOpenIssuesCount(),
-                link.getForksCount(),
-                link.getAnswerCount(),
-                link.getCommentCount(),
-                link.getId());
+        String sql = "UPDATE link SET checked_at = now(), update_at = ?, open_issues_count = ?, "
+            + "forks_count = ?, answer_count = ?, comment_count = ? WHERE id = ?";
+        jdbcTemplate.update(
+            sql,
+            Timestamp.valueOf(link.getUpdatedAt().toLocalDateTime()),
+            link.getOpenIssuesCount(),
+            link.getForksCount(),
+            link.getAnswerCount(),
+            link.getCommentCount(),
+            link.getId()
+        );
         return link;
     }
 
     @Override
     public Optional<Link> getLink(Link link) {
         return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        jdbcTemplate.query("SELECT * FROM link AS L WHERE L.url = ?", linkRowMapper, link.getUrl().toString())
-                )
+            DataAccessUtils.singleResult(
+                jdbcTemplate.query("SELECT * FROM link AS L WHERE L.url = ?", linkRowMapper, link.getUrl().toString())
+            )
         );
     }
 
