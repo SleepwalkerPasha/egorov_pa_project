@@ -17,7 +17,7 @@ public class BotApplication {
         ApplicationConfig config = ctx.getBean(ApplicationConfig.class);
         System.out.println(config);
 
-//        Bot bot = ctx.getBean(TelegramRefresherBot.class);
-//        bot.start();
+        Bot bot = ctx.getBean(TelegramRefresherBot.class);
+        bot.start();
     }
 }
