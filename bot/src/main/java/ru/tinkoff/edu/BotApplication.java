@@ -15,7 +15,5 @@ import ru.tinkoff.edu.java.bot.configuration.ScrapperClientConfig;
 public class BotApplication {
     public static void main(String[] args) {
         var ctx = SpringApplication.run(BotApplication.class, args);
-        Bot bot = ctx.getBean(TelegramRefresherBot.class);
-        bot.start();
     }
 }
