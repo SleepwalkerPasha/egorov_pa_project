@@ -111,7 +111,7 @@ public class JdbcLinkTest extends DatabaseIntegrationTest {
         link.setCheckedAt(OffsetDateTime.now());
         link.setUpdatedAt(OffsetDateTime.now());
 
-        Long addedTgChatId = chatRepository.add(tgId);
+        long addedTgChatId = chatRepository.add(tgId);
         Link newLink = linkRepository.add(link);
 
         Collection<Link> linksById = linkRepository.findAllLinksById(addedTgChatId);

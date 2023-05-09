@@ -10,5 +10,13 @@ public record ApplicationConfig(@NotNull String test,
                                 @NotNull String queueName,
                                 @NotNull String exchangeName,
                                 @NotNull String routingKey,
-                                boolean useQueue) {
+                                boolean useQueue
+) {
+    public String dlqName() {
+        return queueName + ".dlq";
+    }
+
+    public String dlxName() {
+        return exchangeName + ".dlx";
+    }
 }

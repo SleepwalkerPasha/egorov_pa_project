@@ -33,7 +33,7 @@ public class BotConfiguration {
     }
 
     @Bean
-    public UpdatesHandler transferUpdatesHandler() {
-        return new UpdatesHandler(transferBot());
+    public UpdatesHandler transferUpdatesHandler(Bot bot) {
+        return new UpdatesHandler(bot);
     }
 }
