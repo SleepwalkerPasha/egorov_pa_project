@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.client;
+package ru.tinkoff.edu.java.scrapper.message.sender;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -7,10 +7,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.tinkoff.edu.java.scrapper.dto.request.LinkUpdateRequest;
+import ru.tinkoff.edu.java.common.dto.request.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.exception.ApiErrorException;
 
-public class BotWebClient implements BotClient {
+public class BotWebClient implements LinkUpdateSender {
 
     private final WebClient client;
 

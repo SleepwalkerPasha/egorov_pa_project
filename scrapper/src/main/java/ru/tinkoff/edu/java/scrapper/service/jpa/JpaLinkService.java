@@ -2,8 +2,8 @@ package ru.tinkoff.edu.java.scrapper.service.jpa;
 
 import lombok.RequiredArgsConstructor;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-import ru.tinkoff.edu.java.scrapper.dto.request.AddLinkRequest;
-import ru.tinkoff.edu.java.scrapper.dto.request.RemoveLinkRequest;
+import ru.tinkoff.edu.java.common.dto.request.AddLinkRequest;
+import ru.tinkoff.edu.java.common.dto.request.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.Response;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;

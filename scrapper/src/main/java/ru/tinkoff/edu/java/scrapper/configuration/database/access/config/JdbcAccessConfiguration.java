@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.configuration.accessconfig;
+package ru.tinkoff.edu.java.scrapper.configuration.database.access.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,12 +37,12 @@ public class JdbcAccessConfiguration {
     }
 
     @Bean
-    public LinkService transferJdbcLinkService() {
-        return new JdbcLinkService(transferJdbcLinkRepository(), transferJdbcTgChatRepository());
+    public LinkService transferJdbcLinkService(LinkRepository linkRepository, TgChatRepository tgChatRepository) {
+        return new JdbcLinkService(linkRepository, tgChatRepository);
     }
 
     @Bean
-    public TgChatService transferJdbcTgChatService() {
-        return new JdbcTgChatService(transferJdbcTgChatRepository());
+    public TgChatService transferJdbcTgChatService(TgChatRepository tgChatRepository) {
+        return new JdbcTgChatService(tgChatRepository);
     }
 }

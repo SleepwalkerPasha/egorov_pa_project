@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.dto.request;
+package ru.tinkoff.edu.java.common.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +12,7 @@ public class LinkUpdateRequest {
 
     private final Long id;
 
-
     private final String url;
-
 
     private final String description;
 

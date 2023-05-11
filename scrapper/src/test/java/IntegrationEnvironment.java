@@ -52,32 +52,4 @@ public abstract class IntegrationEnvironment {
 
     }
 
-//    @Configuration
-//    @RequiredArgsConstructor
-//    static class JdbcAccessConfiguration{
-//
-//        private final RowMapper<Link> linkRowMapper;
-//
-//        private final JdbcTemplate jdbcTemplate;
-//
-//        @Bean
-//        public LinkRepository transferJdbcLinkRepository() {
-//            return new JdbcLinkRepository(jdbcTemplate, linkRowMapper);
-//        }
-//
-//        @Bean
-//        public TgChatRepository transferJdbcTgChatRepository() {
-//            return new JdbcTgChatRepository(jdbcTemplate);
-//        }
-//
-//        @Bean
-//        public LinkService transferJdbcLinkService() {
-//            return new JdbcLinkService(transferJdbcLinkRepository(), transferJdbcTgChatRepository());
-//        }
-//
-//        @Bean
-//        public TgChatService transferJdbcTgChatService() {
-//            return new JdbcTgChatService(transferJdbcTgChatRepository());
-//        }
-//    }
 }

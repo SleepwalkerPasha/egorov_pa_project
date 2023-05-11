@@ -6,21 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.tinkoff.edu.java.bot.dto.LinkUpdateRequest;
-import ru.tinkoff.edu.java.bot.updater.UpdateService;
+import ru.tinkoff.edu.java.bot.service.Listener;
+import ru.tinkoff.edu.java.common.dto.request.LinkUpdateRequest;
 
 @RestController
 public class BotController {
 
-    private final UpdateService service;
+    private final Listener service;
 
     @Autowired
-    public BotController(UpdateService service) {
+    public BotController(Listener service) {
         this.service = service;
     }
 
     @PostMapping("/updates")
     public void linkUpdate(@RequestBody @NotNull @Valid LinkUpdateRequest request) {
-        service.sendNotification(request);
+        service.receiveNotification(request);
     }
 }

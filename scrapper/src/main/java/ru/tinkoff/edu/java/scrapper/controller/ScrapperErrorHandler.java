@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.tinkoff.edu.java.scrapper.dto.response.ApiErrorResponse;
+import ru.tinkoff.edu.java.common.dto.response.ApiErrorResponse;
 import ru.tinkoff.edu.java.scrapper.exception.ApiErrorException;
 import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;

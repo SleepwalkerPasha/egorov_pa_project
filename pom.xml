@@ -12,6 +12,7 @@
         <module>link-parser</module>
         <module>bot</module>
         <module>scrapper-jooq</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -24,6 +25,7 @@
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
         <failsafe-plugin.version>3.0.0</failsafe-plugin.version>
         <testcontainers.version>1.18.0</testcontainers.version>
+        <amqp.starter.version>3.0.6</amqp.starter.version>
     </properties>
 
     <dependencies>
