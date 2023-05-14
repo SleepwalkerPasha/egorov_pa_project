@@ -16,15 +16,19 @@ import ru.tinkoff.edu.java.bot.exception.ApiErrorException;
 public class ScrapperWebClient implements ScrapperClient {
 
     private final WebClient client;
+    private final String headerName = "Tg-Chat-Id";
+    private final String uriForTgChat = "/tg-chat/{id}";
+    private final String linksUri = "/links";
 
     public ScrapperWebClient(WebClient.Builder builder, @NotNull String url) {
         this.client = builder
                 .baseUrl(url)
                 .filter(ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-                    if (clientResponse.statusCode().is4xxClientError())
+                    if (clientResponse.statusCode().is4xxClientError()) {
                         return clientResponse
                                 .bodyToMono(String.class)
                                 .flatMap(body -> Mono.error(new ApiErrorException(body)));
+                    }
                     return Mono.just(clientResponse);
                 }))
                 .build();
@@ -33,7 +37,7 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public void registerNewChat(Long id) {
         client.post()
-                .uri("/tg-chat/{id}", id)
+                .uri(uriForTgChat, id)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
@@ -42,7 +46,7 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public void deleteChat(Long id) {
         client.delete()
-                .uri("/tg-chat/{id}", id)
+                .uri(uriForTgChat, id)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
@@ -51,8 +55,8 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public ListLinkResponse getFollowedLinks(Long id) {
         return client.get()
-                .uri("/links")
-                .header("Tg-Chat-Id", Long.toString(id))
+                .uri(linksUri)
+                .header(headerName, Long.toString(id))
                 .retrieve()
                 .bodyToMono(ListLinkResponse.class)
                 .block();
@@ -62,8 +66,8 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public LinkResponse addLinkToFollowing(Long id, String url) {
         return client.post()
-                .uri("/links")
-                .header("Tg-Chat-Id", Long.toString(id))
+                .uri(linksUri)
+                .header(headerName, Long.toString(id))
                 .body(BodyInserters.fromValue(new AddLinkRequest(url)))
                 .retrieve()
                 .bodyToMono(LinkResponse.class)
@@ -73,8 +77,8 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public LinkResponse removeLinkFromFollowing(Long id, String url) {
         return client.method(HttpMethod.DELETE)
-                .uri("/links")
-                .header("Tg-Chat-Id", Long.toString(id))
+                .uri(linksUri)
+                .header(headerName, Long.toString(id))
                 .body(BodyInserters.fromValue(new RemoveLinkRequest(url)))
                 .retrieve()
                 .bodyToMono(LinkResponse.class)

@@ -4,11 +4,12 @@ import jakarta.validation.constraints.NotNull;
 
 public class ApiErrorException extends RuntimeException {
 
-    @NotNull
-    protected String description = "Ошибка в API";
+    @SuppressWarnings("checkstyle:MutableException") @NotNull
+    protected String description;
 
     public ApiErrorException(String message) {
         super(message);
+        description = "Ошибка в API";
     }
 
     public String getDescription() {

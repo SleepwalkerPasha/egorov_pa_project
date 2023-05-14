@@ -1,5 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.repository.jpa;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dto.db.Link;
@@ -7,12 +12,6 @@ import ru.tinkoff.edu.java.scrapper.entity.LinkEntity;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.interfaces.JpaChatDao;
 import ru.tinkoff.edu.java.scrapper.repository.jpa.interfaces.JpaLinkDao;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JpaLinkRepository implements LinkRepository {
@@ -24,8 +23,9 @@ public class JpaLinkRepository implements LinkRepository {
     @Override
     @Transactional
     public Link add(Link link) {
-        if (getLink(link).isPresent())
+        if (getLink(link).isPresent()) {
             return link;
+        }
         return entityToLink(jpaLinkDao.save(linkToEntity(link)));
     }
 
@@ -45,8 +45,9 @@ public class JpaLinkRepository implements LinkRepository {
     @Override
     public Optional<Link> getLink(Link link) {
         Optional<LinkEntity> linkEntity = jpaLinkDao.getLink(link.getUrl().toString());
-        if (linkEntity.isEmpty())
+        if (linkEntity.isEmpty()) {
             return Optional.empty();
+        }
         return linkEntity.map(this::entityToLink);
     }
 
@@ -66,8 +67,9 @@ public class JpaLinkRepository implements LinkRepository {
     }
 
     private Link entityToLink(LinkEntity entity) {
-        if (entity == null)
+        if (entity == null) {
             return null;
+        }
         return new Link(entity.getId(),
                 URI.create(entity.getUrl()),
                 entity.getTgId().getId(),
@@ -80,8 +82,9 @@ public class JpaLinkRepository implements LinkRepository {
     }
 
     private LinkEntity linkToEntity(Link link) {
-        if (link == null)
+        if (link == null) {
             return null;
+        }
         LinkEntity linkEntity = new LinkEntity();
         linkEntity.setId(link.getId());
         linkEntity.setUrl(link.getUrl().toString());

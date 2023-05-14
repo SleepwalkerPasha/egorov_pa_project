@@ -7,12 +7,11 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.BaseResponse;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ru.tinkoff.edu.java.bot.bot.commands.Command;
 import ru.tinkoff.edu.java.bot.bot.processor.UserMessageProcessor;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Slf4j
 public class TelegramRefresherBot implements Bot {
@@ -66,13 +65,15 @@ public class TelegramRefresherBot implements Bot {
 
     @Override
     public void close() {
-        if (bot != null)
+        if (bot != null) {
             bot.removeGetUpdatesListener();
+        }
     }
 
     private void sendMessage(SendMessage sendMessage) {
-        if (bot != null)
+        if (bot != null) {
             bot.execute(sendMessage);
+        }
     }
 
     private void printUpdate(Update update) {

@@ -1,13 +1,12 @@
 package ru.tinkoff.edu.java.scrapper.repository.mapper;
 
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.scrapper.dto.db.Link;
-
 import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 
 @Component
 public class LinkMapper implements RowMapper<Link> {

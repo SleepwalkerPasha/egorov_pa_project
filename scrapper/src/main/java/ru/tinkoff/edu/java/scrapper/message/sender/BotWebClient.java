@@ -18,10 +18,11 @@ public class BotWebClient implements LinkUpdateSender {
         this.client = builder
                 .baseUrl(url)
                 .filter(ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-                    if (clientResponse.statusCode().is4xxClientError())
+                    if (clientResponse.statusCode().is4xxClientError()) {
                         return clientResponse
                                 .bodyToMono(String.class)
                                 .flatMap(body -> Mono.error(new ApiErrorException(body)));
+                    }
                     return Mono.just(clientResponse);
                 }))
                 .build();

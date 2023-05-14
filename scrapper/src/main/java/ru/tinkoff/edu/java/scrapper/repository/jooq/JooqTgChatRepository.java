@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repository.jooq;
 
+import java.util.Collection;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -7,10 +9,6 @@ import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.ChatRecord;
 import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
-
-import java.util.Collection;
-import java.util.Optional;
-
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.CHAT;
 import static ru.tinkoff.edu.java.scrapper.domain.jooq.Tables.LINK;
 
@@ -22,8 +20,9 @@ public class JooqTgChatRepository implements TgChatRepository {
 
     @Override
     public long add(long chatId) {
-        if (findByTgChatId(chatId).isPresent())
+        if (findByTgChatId(chatId).isPresent()) {
             throw new BadRequestException("данный пользователь уже зарегистрирован");
+        }
 
         jooq.insertInto(CHAT, CHAT.ID)
                 .values(chatId)
@@ -33,8 +32,9 @@ public class JooqTgChatRepository implements TgChatRepository {
 
     @Override
     public long remove(long chatId) {
-        if (findByTgChatId(chatId).isEmpty())
+        if (findByTgChatId(chatId).isEmpty()) {
             throw new NotFoundException("данный пользователь не зарегистрирован");
+        }
         jooq.deleteFrom(CHAT)
                 .where(CHAT.ID.eq(chatId))
                 .execute();
@@ -46,8 +46,8 @@ public class JooqTgChatRepository implements TgChatRepository {
         return jooq.select(CHAT)
                 .from(CHAT)
                 .fetch()
-                .map(record -> {
-                    ChatRecord chatRecord = (ChatRecord) record.get(0);
+                .map(record1 -> {
+                    ChatRecord chatRecord = (ChatRecord) record1.get(0);
                     return chatRecord.get(CHAT.ID);
                 });
     }
@@ -60,8 +60,8 @@ public class JooqTgChatRepository implements TgChatRepository {
                 .on(CHAT.ID.eq(LINK.TG_ID))
                 .where(LINK.ID.eq(id))
                 .fetch()
-                .map(record -> {
-                    ChatRecord chatRecord = (ChatRecord) record.get(0);
+                .map(record1 -> {
+                    ChatRecord chatRecord = (ChatRecord) record1.get(0);
                     return chatRecord.get(CHAT.ID);
                 });
     }
@@ -72,11 +72,14 @@ public class JooqTgChatRepository implements TgChatRepository {
                 .from(CHAT)
                 .where(CHAT.ID.eq(id))
                 .fetchOne();
-        if (one == null) return Optional.empty();
-        else return Optional.of(one.map(record -> {
-            ChatRecord chatRecord = (ChatRecord) record.get(0);
-            return chatRecord.get(CHAT.ID);
-        }));
+        if (one == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(one.map(record1 -> {
+                ChatRecord chatRecord = (ChatRecord) record1.get(0);
+                return chatRecord.get(CHAT.ID);
+            }));
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repository.jdbc;
 
+import java.util.Collection;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,9 +9,6 @@ import org.springframework.jdbc.core.RowMapper;
 import ru.tinkoff.edu.java.scrapper.exception.BadRequestException;
 import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
-
-import java.util.Collection;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class JdbcTgChatRepository implements TgChatRepository {
@@ -19,25 +18,29 @@ public class JdbcTgChatRepository implements TgChatRepository {
     @Override
     public long add(long chatId) {
         Optional<Long> id = findByTgChatId(chatId);
-        if (id.isPresent())
+        if (id.isPresent()) {
             throw new BadRequestException("данный пользователь уже зарегистрирован");
+        }
         String sql = "INSERT INTO CHAT (id) VALUES (?)";
-        if (jdbcTemplate.update(sql, chatId) == 1)
+        if (jdbcTemplate.update(sql, chatId) == 1) {
             return chatId;
-        else
+        } else {
             return -1L;
+        }
     }
 
     @Override
     public long remove(long chatId) {
         Optional<Long> id = findByTgChatId(chatId);
-        if (id.isEmpty())
+        if (id.isEmpty()) {
             throw new NotFoundException("данный пользователь не зарегистрирован");
+        }
         String sql = "DELETE FROM CHAT WHERE id = ?";
-        if (jdbcTemplate.update(sql, chatId) == 1)
+        if (jdbcTemplate.update(sql, chatId) == 1) {
             return chatId;
-        else
+        } else {
             return -1L;
+        }
     }
 
     @Override
@@ -56,12 +59,11 @@ public class JdbcTgChatRepository implements TgChatRepository {
     public Optional<Long> findByTgChatId(long id) {
         var sql = "SELECT * FROM chat WHERE id = ?";
         return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        jdbcTemplate.query(sql, tgChatRowMapper(), id)
-                )
+            DataAccessUtils.singleResult(
+                jdbcTemplate.query(sql, tgChatRowMapper(), id)
+            )
         );
     }
-
 
     private RowMapper<Long> tgChatRowMapper() {
         return ((rs, rowNum) -> rs.getLong("id"));

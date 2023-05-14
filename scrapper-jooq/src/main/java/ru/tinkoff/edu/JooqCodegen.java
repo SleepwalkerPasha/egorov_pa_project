@@ -1,9 +1,14 @@
 package ru.tinkoff.edu;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.SQLException;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
-import liquibase.database.Database;
 import liquibase.Liquibase;
+import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
@@ -18,14 +23,7 @@ import org.jooq.meta.jaxb.Target;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-
-public class JooqCodegen {
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor") public class JooqCodegen {
 
     private static final PostgreSQLContainer<?> DB_CONTAINER;
     private static final String MASTER_PATH = "migrations/master.yaml";
@@ -40,7 +38,9 @@ public class JooqCodegen {
             dataSource.setUsername(DB_CONTAINER.getUsername());
             dataSource.setPassword(DB_CONTAINER.getPassword());
             Connection connection = dataSource.getConnection();
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Database database = DatabaseFactory
+                .getInstance()
+                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Path path = new File(".").toPath().toAbsolutePath()
                     .getParent()
                     .getParent();
@@ -53,7 +53,7 @@ public class JooqCodegen {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    @SuppressWarnings("checkstyle:UncommentedMain") public static void main(String[] args) throws Exception {
         Configuration configuration = new Configuration()
                 .withJdbc(new Jdbc()
                         .withDriver(DB_CONTAINER.getDriverClassName())

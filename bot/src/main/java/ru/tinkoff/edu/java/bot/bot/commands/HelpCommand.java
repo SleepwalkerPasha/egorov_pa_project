@@ -2,16 +2,11 @@ package ru.tinkoff.edu.java.bot.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class HelpCommand implements Command {
     private String info;
-
-    public HelpCommand() {
-        super();
-    }
 
     @Override
     public String command() {
@@ -29,7 +24,9 @@ public class HelpCommand implements Command {
         return new SendMessage(chatId, info);
     }
 
-    public String getInfo() {return info;}
+    public String getInfo() {
+        return info;
+    }
 
     public void setInfo(List<Command> commands) {
         this.info = buildHelpString(commands);

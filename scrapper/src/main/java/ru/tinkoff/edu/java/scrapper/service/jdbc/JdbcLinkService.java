@@ -1,10 +1,14 @@
 package ru.tinkoff.edu.java.scrapper.service.jdbc;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.common.dto.request.AddLinkRequest;
 import ru.tinkoff.edu.java.common.dto.request.RemoveLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.Response;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
@@ -12,12 +16,6 @@ import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinkService;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Optional;
-
 
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
@@ -43,8 +41,9 @@ public class JdbcLinkService implements LinkService {
             link.setCheckedAt(OffsetDateTime.now());
             link.setAnswerCount(stackOverflowResponse.answerCount());
             link.setCommentCount(stackOverflowResponse.commentCount());
-        } else
+        } else {
             return null;
+        }
         return linkRepository.add(link);
     }
 

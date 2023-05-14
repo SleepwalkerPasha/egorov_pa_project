@@ -26,9 +26,9 @@ public class RabbitMQConfiguration {
     @Bean
     public Queue transferQueue() {
         return QueueBuilder
-                .durable(applicationConfig.queueName())
-                .withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlx")
-                .build();
+            .durable(applicationConfig.queueName())
+            .withArgument("x-dead-letter-exchange", applicationConfig.exchangeName() + ".dlx")
+            .build();
     }
 
     @Bean
@@ -48,7 +48,11 @@ public class RabbitMQConfiguration {
 
     @Bean
     public LinkUpdateSender transferUpdateService() {
-        return new ScrapperQueueProducer(new RabbitTemplate(), applicationConfig.exchangeName(), applicationConfig.routingKey());
+        return new ScrapperQueueProducer(
+            new RabbitTemplate(),
+            applicationConfig.exchangeName(),
+            applicationConfig.routingKey()
+        );
     }
 
 }

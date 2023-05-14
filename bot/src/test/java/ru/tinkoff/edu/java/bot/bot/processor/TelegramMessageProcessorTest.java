@@ -4,38 +4,39 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.tinkoff.edu.java.bot.bot.commands.*;
+import ru.tinkoff.edu.java.bot.bot.commands.Command;
+import ru.tinkoff.edu.java.bot.bot.commands.HelpCommand;
+import ru.tinkoff.edu.java.bot.bot.commands.ListCommand;
+import ru.tinkoff.edu.java.bot.bot.commands.StartCommand;
+import ru.tinkoff.edu.java.bot.bot.commands.TrackCommand;
+import ru.tinkoff.edu.java.bot.bot.commands.UnknownCommand;
+import ru.tinkoff.edu.java.bot.bot.commands.UntrackCommand;
 import ru.tinkoff.edu.java.bot.storage.InMemoryLinkStorage;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-
 
 class TelegramMessageProcessorTest {
 
     @InjectMocks
     TelegramMessageProcessor processor;
-
     Update update;
-
     Chat chat;
-
     Message message;
-
     @Mock
     LinkStorage storage;
+
+    static final String PARAM_TEXT = "text";
 
     @BeforeEach
     void setUp() {
@@ -57,21 +58,25 @@ class TelegramMessageProcessorTest {
         ReflectionTestUtils.setField(processor, "helpCommand", helpCommand);
     }
 
+    void setUpMessageAndUpdate(String command) {
+        ReflectionTestUtils.setField(message, "chat", chat);
+        ReflectionTestUtils.setField(message, PARAM_TEXT, command);
+        ReflectionTestUtils.setField(update, "message", message);
+    }
+
     @Test
     void shouldReturnUnknownCommandMessage() {
-        ReflectionTestUtils.setField(message, "chat", chat);
-        ReflectionTestUtils.setField(message, "text", "/something");
-        ReflectionTestUtils.setField(update, "message", message);
+        setUpMessageAndUpdate("/smth");
+
         Command answer = processor.findCommand(update);
 
         assertEquals(UnknownCommand.class, answer.getClass());
     }
 
-    @Test
+    @SuppressWarnings("checkstyle:MultipleStringLiterals") @Test
     void shouldReturnListSuccess() {
-        ReflectionTestUtils.setField(message, "chat", chat);
-        ReflectionTestUtils.setField(message, "text", "/lists");
-        ReflectionTestUtils.setField(update, "message", message);
+        setUpMessageAndUpdate("/lists");
+
         Set<String> set = Set.of("https://github.com/SleepwalkerPasha/java-filmorate");
         String text = "Список отслеживаемых ссылок: \n" + String.join("\n", set);
 
@@ -81,14 +86,13 @@ class TelegramMessageProcessorTest {
 
         SendMessage answer = processor.process(update);
 
-        assertEquals(expected.getParameters().get("text"), answer.getParameters().get("text"));
+        assertEquals(expected.getParameters().get(PARAM_TEXT), answer.getParameters().get(PARAM_TEXT));
     }
 
     @Test
     void shouldReturnMessageIfListIsEmpty() {
-        ReflectionTestUtils.setField(message, "chat", chat);
-        ReflectionTestUtils.setField(message, "text", "/lists");
-        ReflectionTestUtils.setField(update, "message", message);
+        setUpMessageAndUpdate("/lists");
+
         String text = "Список отслеживаемых ссылок пуст";
 
         when(storage.getFollowedLinks(1L)).thenReturn(new HashSet<>());
@@ -97,7 +101,7 @@ class TelegramMessageProcessorTest {
 
         SendMessage answer = processor.process(update);
 
-        assertEquals(expected.getParameters().get("text"), answer.getParameters().get("text"));
+        assertEquals(expected.getParameters().get(PARAM_TEXT), answer.getParameters().get(PARAM_TEXT));
     }
 
 }

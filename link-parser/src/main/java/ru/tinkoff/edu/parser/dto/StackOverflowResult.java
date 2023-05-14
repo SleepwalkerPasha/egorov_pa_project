@@ -4,9 +4,9 @@ public record StackOverflowResult(Integer id) implements ParseResult {
 
     @Override
     public String toString() {
-        return "StackOverflowResult{" +
-                "id=" + id +
-                '}';
+        return "StackOverflowResult{"
+                + "id=" + id
+                + '}';
     }
 
     @Override

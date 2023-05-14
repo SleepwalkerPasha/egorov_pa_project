@@ -14,7 +14,7 @@ public class UpdatesHandler {
     public void handleUpdates(LinkUpdateRequest request) {
         for (Long tgChatId : request.getTgChatIds()) {
             bot.execute(new SendMessage(tgChatId,
-                    String.format("Произошло обновление по ссылке: %s/n%s", request.getUrl(), request.getDescription())));
+                String.format("Произошло обновление по ссылке: %s/n%s", request.getUrl(), request.getDescription())));
         }
     }
 }

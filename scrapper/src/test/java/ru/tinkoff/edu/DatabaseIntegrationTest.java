@@ -1,4 +1,15 @@
+package ru.tinkoff.edu;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -11,14 +22,6 @@ import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DatabaseIntegrationTest extends IntegrationEnvironment {
@@ -32,11 +35,12 @@ public class DatabaseIntegrationTest extends IntegrationEnvironment {
         String pass = DB_CONTAINER.getPassword();
 
         connection = DriverManager.getConnection(url, user, pass);
-        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+        Database database =
+            DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
 
         Path path = new File(".").toPath().toAbsolutePath()
-                .getParent()
-                .getParent();
+            .getParent()
+            .getParent();
         ResourceAccessor resourceAccessor = new DirectoryResourceAccessor(path);
         Liquibase liquibase = new Liquibase("migrations/master.yaml", resourceAccessor, database);
         liquibase.update(new Contexts(), new LabelExpression());

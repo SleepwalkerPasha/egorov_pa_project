@@ -1,5 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.service.jooq;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.common.dto.request.AddLinkRequest;
@@ -12,11 +16,6 @@ import ru.tinkoff.edu.java.scrapper.exception.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinkService;
-
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class JooqLinkService implements LinkService {
@@ -42,8 +41,9 @@ public class JooqLinkService implements LinkService {
             link.setCheckedAt(OffsetDateTime.now());
             link.setAnswerCount(stackOverflowResponse.answerCount());
             link.setCommentCount(stackOverflowResponse.commentCount());
-        } else
+        } else {
             return null;
+        }
         return linkRepository.add(link);
     }
 

@@ -1,9 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.service.jpa;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.common.dto.request.AddLinkRequest;
 import ru.tinkoff.edu.java.common.dto.request.RemoveLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dto.db.Link;
 import ru.tinkoff.edu.java.scrapper.dto.response.GithubResponse;
 import ru.tinkoff.edu.java.scrapper.dto.response.Response;
 import ru.tinkoff.edu.java.scrapper.dto.response.StackOverflowResponse;
@@ -12,18 +16,12 @@ import ru.tinkoff.edu.java.scrapper.repository.LinkRepository;
 import ru.tinkoff.edu.java.scrapper.repository.TgChatRepository;
 import ru.tinkoff.edu.java.scrapper.service.LinkService;
 
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Optional;
-
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
 
     private final LinkRepository jpaLinkRepository;
 
     private final TgChatRepository jpaTgChatRepository;
-
 
     @Override
     public Link add(long tgChatId, AddLinkRequest url, Response response) {
@@ -41,8 +39,9 @@ public class JpaLinkService implements LinkService {
             link.setCheckedAt(OffsetDateTime.now());
             link.setAnswerCount(stackOverflowResponse.answerCount());
             link.setCommentCount(stackOverflowResponse.commentCount());
-        } else
+        } else {
             return null;
+        }
         return jpaLinkRepository.add(link);
     }
 
