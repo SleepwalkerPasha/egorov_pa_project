@@ -24,11 +24,6 @@ public class BotConfiguration {
     }
 
     @Bean
-    public MetricService transferMetricService() {
-        return new MetricService();
-    }
-
-    @Bean
     public UserMessageProcessor transferUserMessageProcessor() {
         return new TelegramMessageProcessor();
     }
