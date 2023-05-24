@@ -7,6 +7,7 @@ import ru.tinkoff.edu.java.bot.bot.Bot;
 import ru.tinkoff.edu.java.bot.bot.TelegramRefresherBot;
 import ru.tinkoff.edu.java.bot.bot.processor.TelegramMessageProcessor;
 import ru.tinkoff.edu.java.bot.bot.processor.UserMessageProcessor;
+import ru.tinkoff.edu.java.bot.service.MetricService;
 import ru.tinkoff.edu.java.bot.service.UpdatesHandler;
 import ru.tinkoff.edu.java.bot.storage.InMemoryLinkStorage;
 import ru.tinkoff.edu.java.bot.storage.LinkStorage;
@@ -18,8 +19,8 @@ public class BotConfiguration {
     private BotProperties properties;
 
     @Bean
-    public Bot transferBot() {
-        return new TelegramRefresherBot(properties.token(), transferUserMessageProcessor());
+    public Bot transferBot(MetricService metricService) {
+        return new TelegramRefresherBot(properties.token(), transferUserMessageProcessor(), metricService);
     }
 
     @Bean

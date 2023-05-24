@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ru.tinkoff.edu.java.bot.bot.commands.Command;
 import ru.tinkoff.edu.java.bot.bot.processor.UserMessageProcessor;
+import ru.tinkoff.edu.java.bot.service.MetricService;
 
 @Slf4j
 public class TelegramRefresherBot implements Bot {
@@ -24,10 +25,13 @@ public class TelegramRefresherBot implements Bot {
 
     private final UserMessageProcessor processor;
 
-    public TelegramRefresherBot(String token, UserMessageProcessor processor) {
+    private final MetricService metricService;
+
+    public TelegramRefresherBot(String token, UserMessageProcessor processor, MetricService metricService) {
         this.token = token;
         this.processor = processor;
         commands = processor.commands();
+        this.metricService = metricService;
     }
 
     @Override
@@ -73,6 +77,7 @@ public class TelegramRefresherBot implements Bot {
     private void sendMessage(SendMessage sendMessage) {
         if (bot != null) {
             bot.execute(sendMessage);
+            metricService.incrementHandleMessageCount();
         }
     }
 
